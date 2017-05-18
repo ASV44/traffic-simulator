@@ -3,6 +3,7 @@ package com.mygdx.game.gameworld;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -10,8 +11,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 
 public class Car {
-    private float x;
-    private float y;
+    public float x;
+    public float y;
+    public float width;
+    public float height;
+    private float speed;
+    public float angle;
     private Texture skin;
     private Animation<TextureRegion> spriteAnimation;
     private TextureRegion currentFrame;
@@ -20,8 +25,26 @@ public class Car {
     private TextureRegion[] leftTurnSignal;
     private boolean turnSignals;
     private float stateTime;
+    private float screen_width;
+    private float screen_height;
+
+    public float turnPoint_x = 0.102f * screen_width;
+    public float turnPoint_y = 0;//0.342f * screen_height;
+
+    private float turnRightRadius;
+    private float turningDelta_x;
+    private float turningDelta_y;
+
+    private boolean turning;
 
     public Car(int type, int frameNumber) {
+        screen_width = Gdx.graphics.getWidth();
+        screen_height = Gdx.graphics.getHeight();
+        x = 0.489f * screen_width;
+        y = 0;
+        width = 0.052f * screen_width;
+        height = 0.175f * screen_height;
+        angle = 0f;
         skin = new Texture(Gdx.files.internal("cars/" + type + ".png"));
         frames = new TextureRegion[frameNumber];
         TextureRegion[][] temp_frames;
@@ -37,17 +60,24 @@ public class Car {
         turnSignals = false;
         stateTime = 0;
 
+        speed = (float) (0.00462 * screen_height);
+
+        turning = false;
+
+        turnRightRadius = 0.038f * screen_width;
+        turningDelta_x = 0.0f;
+        turningDelta_y = 0.0f;
 
     }
 
-    public void initTurnRightFrames(TextureRegion[] frames) {
+    private void initTurnRightFrames(TextureRegion[] frames) {
         rightTurnSignal = new TextureRegion[2];
 
         rightTurnSignal[0] = frames[0];
         rightTurnSignal[1] = frames[2];
     }
 
-    public void initTurnLeftFrames(TextureRegion[] frames) {
+    private void initTurnLeftFrames(TextureRegion[] frames) {
         leftTurnSignal = new TextureRegion[2];
 
         leftTurnSignal[0] = frames[0];
@@ -59,6 +89,104 @@ public class Car {
         if(turnSignals) {
             currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
         }
+    }
+
+    public void move(int speed) {
+        //if((y >= turnPoint_y - speed && y <= turnPoint_y + speed) || turning) {
+        if((y >= 0.319f * screen_height - speed && y <= 0.319f * screen_height + speed && angle == 0f)
+                || (x >= 0.39f * screen_width - speed && x <= 0.39f * screen_width + speed && angle == -90f)
+                || (y <= 0.559f * screen_height + speed && y >= 0.559f * screen_height - speed && angle == -180f)
+                || (x <= 0.53f * screen_width + speed && x >= 0.53f * screen_width - speed && angle == -270f)
+                || turning) {
+            if(!turning) {
+                turning = true;
+                turningDelta_x = 0.0f;
+                turningDelta_y = 0.0f;
+            }
+            turnRight();
+        }
+        else {
+            if(angle == 0f) {
+                y += speed * this.speed;
+                if (y > screen_height) {
+                    y = 0 - height;
+                }
+            }
+            else if(angle == 90f || angle == -270f) {
+                x -= speed * this.speed;
+                if(x < 0 - height) {
+                    x = screen_width + height;
+                }
+            }
+            else  if(angle == 180f || angle == -180f) {
+                y -= speed * this.speed;
+                if(y < 0 - height) {
+                    y = screen_height + height;
+                }
+            }
+            else if(angle == 270f || angle == -90f) {
+                x += speed * this.speed;
+                if(x > screen_width) {
+                    x = 0 - height;
+                }
+            }
+        }
+    }
+
+    public void turnRight() {
+        if(angle <= 0f && angle > -90f) {
+            angle -= 3;
+            if (angle <= -90f) {
+                angle = -90f;
+                turning = false;
+            }
+            x -= turningDelta_x;
+            y -= turningDelta_y;
+            turningDelta_x = turnRightRadius - turnRightRadius * (float) Math.cos(Math.toRadians(-angle));
+            turningDelta_y = turnRightRadius * (float) Math.sin(Math.toRadians(-angle));
+            x += turningDelta_x;
+            y += turningDelta_y;
+        }
+        else if(angle <= -90f && angle > -180f) {
+            angle -= 3;
+            if(angle <= -180f) {
+                angle = -180f;
+                turning = false;
+            }
+            x -= turningDelta_x;
+            y += turningDelta_y;
+            turningDelta_x = turnRightRadius - turnRightRadius * (float) Math.cos(Math.toRadians(-angle - 90));
+            turningDelta_y = turnRightRadius * (float) Math.sin(Math.toRadians(-angle - 90));
+            x += turningDelta_x;
+            y -= turningDelta_y;
+        }
+        else if(angle <= -180f && angle > -270f) {
+            angle -= 3;
+            if(angle <= -270f) {
+                angle = -270f;
+                turning = false;
+            }
+            x += turningDelta_x;
+            y += turningDelta_y;
+            turningDelta_x = turnRightRadius - turnRightRadius * (float) Math.cos(Math.toRadians(-angle - 180));
+            turningDelta_y = turnRightRadius * (float) Math.sin(Math.toRadians(-angle - 180));
+            x -= turningDelta_x;
+            y -= turningDelta_y;
+        }
+        else if(angle <= -270f && angle > -360f) {
+            angle -= 3;
+            if(angle <= -360f) {
+                angle = 0f;
+                turning = false;
+            }
+            x += turningDelta_x;
+            y -= turningDelta_y;
+            turningDelta_x = turnRightRadius - turnRightRadius * (float) Math.cos(Math.toRadians(-angle - 270));
+            turningDelta_y = turnRightRadius * (float) Math.sin(Math.toRadians(-angle - 270));
+            x -= turningDelta_x;
+            y += turningDelta_y;
+        }
+        Gdx.app.log("Angle","" + angle);
     }
 
     public void turnSignalsRight() {

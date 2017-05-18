@@ -15,8 +15,6 @@ public class TrafficRenderer {
     private float screenWidth;
     private float screenHeight;
 
-    float sample_y = 0;
-
     public TrafficRenderer(TrafficItems items) {
         this.items = items;
         batch = new SpriteBatch();
@@ -29,19 +27,24 @@ public class TrafficRenderer {
 //        Gdx.app.log("ScreenWidth","" + screenWidth);
 //        Gdx.app.log("ScreenHeight","" + screenHeight);
         float k = screenHeight / items.getCrossroad().getHeight();
-        Gdx.gl.glClearColor(255, 255, 255, 0);
+        //Gdx.gl.glClearColor(255, 255, 255, 0);
+        Gdx.gl.glClearColor(0.36f, 0.45f, 0.043f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(items.getCrossroad(), 0, 0, items.getCrossroad().getWidth() * k, screenHeight);
-        batch.draw(items.getSample_car().getCurrentFrame(),(float)(items.getCrossroad().getWidth() * k * 0.522),sample_y,
-                (float)(items.getCrossroad().getWidth() * 0.14),
-                (float)(items.getCrossroad().getHeight() * 0.3));
+        //batch.draw(items.getCrossroad(), 0, 0, items.getCrossroad().getWidth() * k, screenHeight);
+        batch.draw(items.getCrossroad(), 0, 0, screenWidth, screenHeight);
+//        batch.draw(items.getSample_car().getCurrentFrame(),items.getSample_car().x,items.getSample_car().y,
+//                items.getSample_car().width, items.getSample_car().height);
+        batch.draw(items.getSample_car().getCurrentFrame(), items.getSample_car().x,items.getSample_car().y,
+                items.getSample_car().width / 2, items.getSample_car().height / 2,
+                items.getSample_car().width, items.getSample_car().height, 1, 1, items.getSample_car().angle);
+        Gdx.app.log("Sample_Car_X","" + items.getSample_car().x);
+        Gdx.app.log("Sample_Car_Y","" + items.getSample_car().y);
+//        batch.draw(items.getSample_car().getCurrentFrame(), items.getSample_car().x,items.getSample_car().y,
+//                items.getSample_car().turnPoint_x, items.getSample_car().turnPoint_y,
+//                items.getSample_car().width, items.getSample_car().height, 1, 1, items.getSample_car().angle);
         batch.end();
 
-        sample_y += 5;
-        if(sample_y > screenHeight) {
-            sample_y = 0;
-        }
     }
 
     public void dispose() {

@@ -50,6 +50,7 @@ public class TrafficScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        items.dispose();
+        renderer.dispose();
     }
 }

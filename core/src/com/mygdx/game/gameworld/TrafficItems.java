@@ -14,12 +14,14 @@ public class TrafficItems {
 
     public TrafficItems() {
         crossroad = new Texture(Gdx.files.internal("crossroad2.png"));
-        sample_car = new Car(1,3);
+        sample_car = new Car(1,4);
         sample_car.turnSignalsRight();
     }
 
     public void update(float delta) {
+
         sample_car.update(delta);
+        sample_car.move(1);
     }
 
     public void dispose() {

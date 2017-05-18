@@ -13,6 +13,8 @@ public class Main extends Game {
 	
 	@Override
 	public void create () {
+		Gdx.app.log("Screen_Width","" + Gdx.graphics.getWidth());
+		Gdx.app.log("Screen_Height","" + Gdx.graphics.getHeight());
         trafficScreen = new TrafficScreen();
         setScreen(trafficScreen);
 	}
