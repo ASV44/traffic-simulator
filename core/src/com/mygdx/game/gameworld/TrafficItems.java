@@ -15,7 +15,8 @@ public class TrafficItems {
     public TrafficItems() {
         crossroad = new Texture(Gdx.files.internal("crossroad2.png"));
         sample_car = new Car(1,4);
-        sample_car.turnSignalsRight();
+        //sample_car.turnSignalsRight();
+        sample_car.turnSignalsLeft();
     }
 
     public void update(float delta) {
