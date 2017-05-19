@@ -107,7 +107,6 @@ public class Car {
 //            }
 //            turnRight();
 //        }
-
         if((y >= 0.421f * screen_height - speed && y <= 0.421f * screen_height + speed && angle == 0f)
                 || (x >= 0.452f * screen_width - speed && x <= 0.452f * screen_width + speed && angle == -90f)
                 || (y <= 0.455f * screen_height + speed && y >= 0.455f * screen_height - speed && angle == -180f)
