@@ -33,16 +33,19 @@ public class TrafficRenderer {
         batch.begin();
         //batch.draw(items.getCrossroad(), 0, 0, items.getCrossroad().getWidth() * k, screenHeight);
         batch.draw(items.getCrossroad(), 0, 0, screenWidth, screenHeight);
-//        batch.draw(items.getSample_car().getCurrentFrame(),items.getSample_car().x,items.getSample_car().y,
-//                items.getSample_car().width, items.getSample_car().height);
-        batch.draw(items.getSample_car().getCurrentFrame(), items.getSample_car().x,items.getSample_car().y,
-                items.getSample_car().width / 2, items.getSample_car().height / 2,
-                items.getSample_car().width, items.getSample_car().height, 1, 1, items.getSample_car().angle);
-        Gdx.app.log("Sample_Car_X","" + items.getSample_car().x);
-        Gdx.app.log("Sample_Car_Y","" + items.getSample_car().y);
-//        batch.draw(items.getSample_car().getCurrentFrame(), items.getSample_car().x,items.getSample_car().y,
-//                items.getSample_car().turnPoint_x, items.getSample_car().turnPoint_y,
-//                items.getSample_car().width, items.getSample_car().height, 1, 1, items.getSample_car().angle);
+//        batch.draw(items.getCars().get(i).getCurrentFrame(),items.getCars().get(i).x,items.getCars().get(i).y,
+//                items.getCars().get(i).width, items.getCars().get(i).height);
+        for(int i = 0; i < items.getCars().size(); i++) {
+            batch.draw(items.getCars().get(i).getCurrentFrame(), items.getCars().get(i).x, items.getCars().get(i).y,
+                    items.getCars().get(i).width / 2, items.getCars().get(i).height / 2,
+                    items.getCars().get(i).width, items.getCars().get(i).height, 1, 1, items.getCars().get(i).angle);
+
+            Gdx.app.log("Sample_Car_X","" + items.getCars().get(i).x);
+            Gdx.app.log("Sample_Car_Y","" + items.getCars().get(i).y);
+        }
+//        batch.draw(items.getCars().get(i).getCurrentFrame(), items.getCars().get(i).x,items.getCars().get(i).y,
+//                items.getCars().get(i).turnPoint_x, items.getCars().get(i).turnPoint_y,
+//                items.getCars().get(i).width, items.getCars().get(i).height, 1, 1, items.getCars().get(i).angle);
         batch.end();
 
     }
