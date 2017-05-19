@@ -38,14 +38,15 @@ public class Car {
 
     private boolean turning;
 
-    public Car(int type, int frameNumber) {
+    public Car(int type, int frameNumber, float angle) {
         screen_width = Gdx.graphics.getWidth();
         screen_height = Gdx.graphics.getHeight();
-        x = 0.489f * screen_width;
-        y = 0;
+//        x = 0.489f * screen_width;
+//        y = 0;
+        initPosition(angle);
         width = 0.052f * screen_width;
         height = 0.175f * screen_height;
-        angle = 0f;
+        this.angle = angle;
         skin = new Texture(Gdx.files.internal("cars/" + type + ".png"));
         frames = new TextureRegion[frameNumber];
         TextureRegion[][] temp_frames;
@@ -72,6 +73,32 @@ public class Car {
 
     }
 
+    private void initPosition(float angle) {
+        int direction = (int)angle;
+
+        switch (direction) {
+            case 0:
+                x = 0.489f * screen_width;
+                y = 0 - height;
+                break;
+            case -90:
+                x = 0 - height;
+                y = 0.386f * screen_height;
+                break;
+            case -180:
+                x = 0.429f * screen_width;
+                y = screen_height + height;
+                break;
+            case -270:
+                x = screen_width + height;
+                y = 0.494f * screen_height;
+                break;
+            default:
+                x = 0.489f * screen_width;
+                y = 0 - height;
+        }
+    }
+
     private void initTurnRightFrames(TextureRegion[] frames) {
         rightTurnSignal = new TextureRegion[2];
 
@@ -94,14 +121,15 @@ public class Car {
     }
 
     public void move(int speed) {
+        int turnDelta = 2;
         if(!turnSignals && !currentFrame.equals(frames[0])) {
             currentFrame = frames[0];
         }
-        //if((y >= turnPoint_y - speed && y <= turnPoint_y + speed) || turning) {
-//        if((y >= 0.319f * screen_height - speed && y <= 0.319f * screen_height + speed && angle == 0f)
-//                || (x >= 0.39f * screen_width - speed && x <= 0.39f * screen_width + speed && angle == -90f)
-//                || (y <= 0.559f * screen_height + speed && y >= 0.559f * screen_height - speed && angle == -180f)
-//                || (x <= 0.53f * screen_width + speed && x >= 0.53f * screen_width - speed && angle == -270f)
+//        if((y >= turnPoint_y - speed && y <= turnPoint_y + speed) || turning) {
+//        if((y >= 0.319f * screen_height - turnDelta && y <= 0.319f * screen_height + turnDelta && angle == 0f)
+//                || (x >= 0.394f * screen_width - turnDelta && x <= 0.394f * screen_width + turnDelta && angle == -90f)
+//                || (y <= 0.556f * screen_height + turnDelta && y >= 0.556f * screen_height - turnDelta && angle == -180f)
+//                || (x <= 0.53f * screen_width + turnDelta && x >= 0.53f * screen_width - turnDelta && angle == -270f)
 //                || turning) {
 //            if(!turning) {
 //                turning = true;
@@ -110,10 +138,10 @@ public class Car {
 //            }
 //            turnRight();
 //        }
-        if((y >= 0.421f * screen_height - speed && y <= 0.421f * screen_height + speed && angle == 0f)
-                || (x >= 0.452f * screen_width - speed && x <= 0.452f * screen_width + speed && angle == -90f)
-                || (y <= 0.455f * screen_height + speed && y >= 0.455f * screen_height - speed && angle == -180f)
-                || (x <= 0.469f * screen_width + speed && x >= 0.469f * screen_width - speed && angle == -270f)
+        if((y >= 0.421f * screen_height - turnDelta && y <= 0.421f * screen_height + turnDelta && angle == 0f)
+                || (x >= 0.45f * screen_width - turnDelta && x <= 0.45f * screen_width + turnDelta && angle == -90f)
+                || (y <= 0.445f * screen_height + turnDelta && y >= 0.445f * screen_height - turnDelta && angle == -180f)
+                || (x <= 0.469f * screen_width + turnDelta && x >= 0.469f * screen_width - turnDelta && angle == -270f)
                 || turning) {
             if(!turning) {
                 turning = true;
