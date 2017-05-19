@@ -3,7 +3,6 @@ package com.mygdx.game.gameworld;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -15,8 +14,9 @@ public class Car {
     public float y;
     public float width;
     public float height;
-    private float speed;
     public float angle;
+    public float turnPoint_y = 0;//0.342f * screen_height;
+    private float speed;
     private Texture skin;
     private Animation<TextureRegion> spriteAnimation;
     private TextureRegion currentFrame;
@@ -26,11 +26,8 @@ public class Car {
     private boolean turnSignals;
     private float stateTime;
     private float screen_width;
-    private float screen_height;
-
     public float turnPoint_x = 0.102f * screen_width;
-    public float turnPoint_y = 0;//0.342f * screen_height;
-
+    private float screen_height;
     private float turnRightRadius;
     private float turnLeftRadius;
     private float turningDelta_x;
