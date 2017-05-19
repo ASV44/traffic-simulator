@@ -71,7 +71,7 @@ public class Car {
     }
 
     private void initPosition(float angle) {
-        int direction = (int)angle;
+        int direction = (int) angle;
 
         switch (direction) {
             case 0:
@@ -135,7 +135,7 @@ public class Car {
 //            }
 //            turnRight();
 //        }
-        if((y >= 0.421f * screen_height - turnDelta && y <= 0.421f * screen_height + turnDelta && angle == 0f)
+        if ((y >= 0.421f * screen_height - turnDelta && y <= 0.421f * screen_height + turnDelta && angle == 0f)
                 || (x >= 0.45f * screen_width - turnDelta && x <= 0.45f * screen_width + turnDelta && angle == -90f)
                 || (y <= 0.445f * screen_height + turnDelta && y >= 0.445f * screen_height - turnDelta && angle == -180f)
                 || (x <= 0.469f * screen_width + turnDelta && x >= 0.469f * screen_width - turnDelta && angle == -270f)
