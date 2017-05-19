@@ -18,7 +18,7 @@ public class CarFactory {
         float initAngle = getInitAngle();
         CarMoveDirection carMoveDirection = getMoveDirection();
 
-        return new Car(carType.type, carType.numSprites, initAngle);
+        return new Car(carType.type, carType.numSprites, initAngle, carMoveDirection);
     }
 
     private CarMoveDirection getMoveDirection() {

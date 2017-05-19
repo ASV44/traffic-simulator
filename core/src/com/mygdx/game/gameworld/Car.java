@@ -16,6 +16,7 @@ public class Car {
     public float height;
     public float angle;
     public float turnPoint_y = 0;//0.342f * screen_height;
+    public CarMoveDirection moveDirection;
     private float speed;
     private Texture skin;
     private Animation<TextureRegion> spriteAnimation;
@@ -32,10 +33,9 @@ public class Car {
     private float turnLeftRadius;
     private float turningDelta_x;
     private float turningDelta_y;
-
     private boolean turning;
 
-    public Car(int type, int frameNumber, float angle) {
+    public Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
         screen_width = Gdx.graphics.getWidth();
         screen_height = Gdx.graphics.getHeight();
 //        x = 0.489f * screen_width;
@@ -67,6 +67,8 @@ public class Car {
         turnLeftRadius = 0.094f * screen_width;
         turningDelta_x = 0.0f;
         turningDelta_y = 0.0f;
+
+        moveDirection = moveDir;
 
     }
 
@@ -122,56 +124,74 @@ public class Car {
         if(!turnSignals && !currentFrame.equals(frames[0])) {
             currentFrame = frames[0];
         }
-//        if((y >= turnPoint_y - speed && y <= turnPoint_y + speed) || turning) {
-//        if((y >= 0.319f * screen_height - turnDelta && y <= 0.319f * screen_height + turnDelta && angle == 0f)
-//                || (x >= 0.394f * screen_width - turnDelta && x <= 0.394f * screen_width + turnDelta && angle == -90f)
-//                || (y <= 0.556f * screen_height + turnDelta && y >= 0.556f * screen_height - turnDelta && angle == -180f)
-//                || (x <= 0.53f * screen_width + turnDelta && x >= 0.53f * screen_width - turnDelta && angle == -270f)
-//                || turning) {
-//            if(!turning) {
-//                turning = true;
-//                turningDelta_x = 0.0f;
-//                turningDelta_y = 0.0f;
-//            }
-//            turnRight();
-//        }
+
+        switch (moveDirection) {
+            case TurnLeft:
+                turnCarLeft(turnDelta);
+                break;
+            case TurnRight:
+                turnCarRight(turnDelta);
+                break;
+        }
+
+        switch ((int) angle) {
+            case 0:
+                y += speed * this.speed;
+                if (y > screen_height) {
+                    y = 0 - height;
+                }
+                break;
+            case 90:
+            case -270:
+                x -= speed * this.speed;
+                if(x < 0 - height) {
+                    x = screen_width + height;
+                }
+                break;
+            case 180:
+            case -180:
+                y -= speed * this.speed;
+                if(y < 0 - height) {
+                    y = screen_height + height;
+                }
+                break;
+            case 270:
+            case -90:
+                x += speed * this.speed;
+                if(x > screen_width) {
+                    x = 0 - height;
+                }
+                break;
+        }
+    }
+
+    private void turnCarLeft(int turnDelta) {
         if ((y >= 0.421f * screen_height - turnDelta && y <= 0.421f * screen_height + turnDelta && angle == 0f)
                 || (x >= 0.45f * screen_width - turnDelta && x <= 0.45f * screen_width + turnDelta && angle == -90f)
                 || (y <= 0.445f * screen_height + turnDelta && y >= 0.445f * screen_height - turnDelta && angle == -180f)
                 || (x <= 0.469f * screen_width + turnDelta && x >= 0.469f * screen_width - turnDelta && angle == -270f)
                 || turning) {
-            if(!turning) {
+            if (!turning) {
                 turning = true;
                 turningDelta_x = 0.0f;
                 turningDelta_y = 0.0f;
             }
             turnLeft();
         }
-        else {
-            if(angle == 0f) {
-                y += speed * this.speed;
-                if (y > screen_height) {
-                    y = 0 - height;
-                }
+    }
+
+    private void turnCarRight(int turnDelta) {
+        if ((y >= 0.319f * screen_height - turnDelta && y <= 0.319f * screen_height + turnDelta && angle == 0f)
+                || (x >= 0.394f * screen_width - turnDelta && x <= 0.394f * screen_width + turnDelta && angle == -90f)
+                || (y <= 0.556f * screen_height + turnDelta && y >= 0.556f * screen_height - turnDelta && angle == -180f)
+                || (x <= 0.53f * screen_width + turnDelta && x >= 0.53f * screen_width - turnDelta && angle == -270f)
+                || turning) {
+            if (!turning) {
+                turning = true;
+                turningDelta_x = 0.0f;
+                turningDelta_y = 0.0f;
             }
-            else if(angle == 90f || angle == -270f) {
-                x -= speed * this.speed;
-                if(x < 0 - height) {
-                    x = screen_width + height;
-                }
-            }
-            else  if(angle == 180f || angle == -180f) {
-                y -= speed * this.speed;
-                if(y < 0 - height) {
-                    y = screen_height + height;
-                }
-            }
-            else if(angle == 270f || angle == -90f) {
-                x += speed * this.speed;
-                if(x > screen_width) {
-                    x = 0 - height;
-                }
-            }
+            turnRight();
         }
     }
 

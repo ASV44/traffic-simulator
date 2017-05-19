@@ -17,11 +17,13 @@ public class TrafficItems {
     private CarFactory mCarFactory;
 
     public TrafficItems() {
+
         mCrossroad = new Texture(Gdx.files.internal("crossroad2.png"));
         mCarFactory = new CarFactory();
         mCars = new ArrayList<Car>();
         mCars.add(mCarFactory.newCar(CarTypes.SimpleCar));
-        mCars.get(0).turnSignalsLeft();
+        mCars.add(mCarFactory.newCar(CarTypes.SimpleCar));
+        mCars.add(mCarFactory.newCar(CarTypes.SimpleCar));
     }
 
     public void update(float delta) {
@@ -39,9 +41,6 @@ public class TrafficItems {
         return this.mCrossroad;
     }
 
-    public Car getSample_car() {
-        return this.mCars.get(0);
-    }
 
     public List<Car> getCars() {
         return this.mCars;
