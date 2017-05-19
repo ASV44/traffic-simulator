@@ -1,5 +1,7 @@
 package com.mygdx.game.gameworld;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.Random;
 
 /**
@@ -16,7 +18,7 @@ public class CarFactory {
         float initAngle = getInitAngle();
         CarMoveDirection carMoveDirection = getMoveDirection();
 
-        return new Car(carType.type, carType.numSprites);
+        return new Car(carType.type, carType.numSprites, initAngle);
     }
 
     private CarMoveDirection getMoveDirection() {
@@ -26,7 +28,9 @@ public class CarFactory {
 
     private float getInitAngle() {
         float angle = 0;
-        switch (mRandGen.nextInt(4)) {
+        int rand = mRandGen.nextInt(4);
+        Gdx.app.log("Rand ", "" + rand);
+        switch (rand) {
             case 0:
                 angle = 0f;
                 break;

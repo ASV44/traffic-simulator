@@ -12,9 +12,9 @@ enum CarTypes {
     public int numSprites;
     public int speed;
 
-    CarTypes(int _type, int _numSprites, int defSpeed) {
-        type = _type;
-        numSprites = _numSprites;
-        speed = defSpeed;
+    CarTypes(int t, int n, int s) {
+        type = t;
+        numSprites = n;
+        speed = s;
     }
 }
