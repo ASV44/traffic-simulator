@@ -26,7 +26,6 @@ public class TrafficRenderer {
 
 //        Gdx.app.log("ScreenWidth","" + screenWidth);
 //        Gdx.app.log("ScreenHeight","" + screenHeight);
-        float k = screenHeight / items.getCrossroad().getHeight();
         //Gdx.gl.glClearColor(255, 255, 255, 0);
         Gdx.gl.glClearColor(0.36f, 0.45f, 0.043f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -42,6 +41,11 @@ public class TrafficRenderer {
 
             Gdx.app.log("Sample_Car_X","" + items.getCars().get(i).x);
             Gdx.app.log("Sample_Car_Y","" + items.getCars().get(i).y);
+        }
+        for(TrafficLight trafficLight : items.getTrafficLights()) {
+            batch.draw(trafficLight.currentFrame,trafficLight.x,trafficLight.y,
+                    trafficLight.width / 2,trafficLight.height / 2,
+                    trafficLight.width,trafficLight.height,1,1, trafficLight.angle);
         }
 //        batch.draw(items.getCars().get(i).getCurrentFrame(), items.getCars().get(i).x,items.getCars().get(i).y,
 //                items.getCars().get(i).turnPoint_x, items.getCars().get(i).turnPoint_y,
