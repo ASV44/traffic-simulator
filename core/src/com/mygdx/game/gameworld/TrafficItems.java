@@ -29,7 +29,9 @@ public class TrafficItems {
     public void update(float delta) {
         for (Car car : mCars) {
             car.update(delta);
-            car.move(1);
+            if (car.canMove()) {
+                car.move(1);
+            }
         }
     }
 
@@ -37,12 +39,11 @@ public class TrafficItems {
         mCrossroad.dispose();
     }
 
-    public Texture getCrossroad() {
+    Texture getCrossroad() {
         return this.mCrossroad;
     }
 
-
-    public List<Car> getCars() {
+    List<Car> getCars() {
         return this.mCars;
     }
 }

@@ -9,14 +9,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * Created by hackintosh on 5/16/17.
  */
 
-public class Car {
-    public float x;
-    public float y;
-    public float width;
-    public float height;
-    public float angle;
+class Car {
     public float turnPoint_y = 0;//0.342f * screen_height;
-    public CarMoveDirection moveDirection;
+    float x;
+    float y;
+    float width;
+    float height;
+    float angle;
+    CarMoveDirection moveDirection;
     private float speed;
     private Texture skin;
     private Animation<TextureRegion> spriteAnimation;
@@ -35,7 +35,7 @@ public class Car {
     private float turningDelta_y;
     private boolean turning;
 
-    public Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
+    Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
         screen_width = Gdx.graphics.getWidth();
         screen_height = Gdx.graphics.getHeight();
 //        x = 0.489f * screen_width;
@@ -100,7 +100,6 @@ public class Car {
 
     private void initTurnRightFrames(TextureRegion[] frames) {
         rightTurnSignal = new TextureRegion[2];
-
         rightTurnSignal[0] = frames[0];
         rightTurnSignal[1] = frames[2];
     }
@@ -112,14 +111,14 @@ public class Car {
         leftTurnSignal[1] = frames[1];
     }
 
-    public void update(float delta) {
+    void update(float delta) {
         stateTime += delta;
         if(turnSignals) {
             currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
         }
     }
 
-    public void move(int speed) {
+    void move(int speed) {
         int turnDelta = 2;
         if(!turnSignals && !currentFrame.equals(frames[0])) {
             currentFrame = frames[0];
@@ -195,7 +194,7 @@ public class Car {
         }
     }
 
-    public void turnRight() {
+    private void turnRight() {
         if(angle <= 0f && angle > -90f) {
             angle -= 3;
             if (angle <= -90f) {
@@ -251,7 +250,7 @@ public class Car {
         Gdx.app.log("Angle","" + angle);
     }
 
-    public void turnLeft() {
+    private void turnLeft() {
         if(angle >= 0f && angle < 90f) {
             angle += 3;
             if (angle >= 90f) {
@@ -307,13 +306,13 @@ public class Car {
         Gdx.app.log("Angle","" + angle);
     }
 
-    public void stop() {
+    void stop() {
         if(!turnSignals) {
             currentFrame = frames[3];
         }
     }
 
-    public void turnSignalsRight() {
+    void turnSignalsRight() {
         if(turnSignals) {
             turnSignals = false;
             stateTime = 0;
@@ -324,8 +323,8 @@ public class Car {
             turnSignals = true;
         }
     }
-    
-    public void turnSignalsLeft() {
+
+    void turnSignalsLeft() {
         if(turnSignals) {
             turnSignals= false;
             stateTime = 0;
@@ -337,5 +336,11 @@ public class Car {
         }
     }
 
-    public TextureRegion getCurrentFrame() { return this.currentFrame; }
+    TextureRegion getCurrentFrame() {
+        return this.currentFrame;
+    }
+
+    boolean canMove() {
+        return true;
+    }
 }

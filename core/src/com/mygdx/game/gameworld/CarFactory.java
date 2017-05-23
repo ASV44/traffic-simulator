@@ -8,13 +8,13 @@ import java.util.Random;
  * Created by the-french-cat on 19/05/17.
  */
 
-public class CarFactory {
+class CarFactory {
     private Random mRandGen;
     CarFactory() {
         mRandGen = new Random();
     }
 
-    protected Car newCar(CarTypes carType) {
+    Car newCar(CarTypes carType) {
         float initAngle = getInitAngle();
         CarMoveDirection carMoveDirection = getMoveDirection();
 
