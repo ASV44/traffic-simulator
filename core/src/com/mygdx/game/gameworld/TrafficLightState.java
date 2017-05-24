@@ -5,4 +5,9 @@ package com.mygdx.game.gameworld;
  */
 
 public enum TrafficLightState {
+    Green,
+    Yellow,
+    Red,
+    FlashignGreen,
+    FlashingYellow
 }

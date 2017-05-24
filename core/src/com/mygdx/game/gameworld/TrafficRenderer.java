@@ -42,10 +42,10 @@ public class TrafficRenderer {
             Gdx.app.log("Sample_Car_X", "" + items.getCars().get(i).x);
             Gdx.app.log("Sample_Car_Y", "" + items.getCars().get(i).y);
         }
-        for(TrafficLight trafficLight : items.getTrafficLights()) {
-            batch.draw(trafficLight.currentFrame,trafficLight.x,trafficLight.y,
-                    trafficLight.width / 2,trafficLight.height / 2,
-                    trafficLight.width,trafficLight.height,1,1, trafficLight.angle);
+        for (TrafficLight trafficLight : items.getTrafficLights()) {
+            batch.draw(trafficLight.currentFrame, trafficLight.x, trafficLight.y,
+                    trafficLight.width / 2, trafficLight.height / 2,
+                    trafficLight.width, trafficLight.height, 1, 1, trafficLight.angle);
         }
 //        batch.draw(items.getCars().get(i).getCurrentFrame(), items.getCars().get(i).x,items.getCars().get(i).y,
 //                items.getCars().get(i).turnPoint_x, items.getCars().get(i).turnPoint_y,
