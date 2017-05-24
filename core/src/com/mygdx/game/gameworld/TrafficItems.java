@@ -14,14 +14,22 @@ import java.util.Queue;
 public class TrafficItems {
     private Texture mCrossroad;
     private CarFactory mCarFactory;
+
     private Queue<Car> mCarIntersection;
     private Queue<Car> mNorthCarQueue;
     private Queue<Car> mEastCarQueue;
     private Queue<Car> mSouthCarQueue;
     private Queue<Car> mWestCarQueue;
     private Car mCar;
+    private TrafficLight[] trafficLights;
+
     public TrafficItems() {
         mCrossroad = new Texture(Gdx.files.internal("crossroad2.png"));
+        trafficLights = new TrafficLight[4];
+        for(int i = 0; i < 4 ; i++) {
+            trafficLights[i] = new TrafficLight(i);
+            trafficLights[i].flashingYellow();
+        }
         mCarFactory = new CarFactory();
         mNorthCarQueue = new LinkedList<Car>();
         mSouthCarQueue = new LinkedList<Car>();
@@ -36,10 +44,14 @@ public class TrafficItems {
     }
 
     public void update(float delta) {
+
         moveCars(mNorthCarQueue, delta);
         moveCars(mSouthCarQueue, delta);
         removeHiddenCars(mNorthCarQueue);
         removeHiddenCars(mSouthCarQueue);
+        for(TrafficLight trafficLight : trafficLights) {
+            trafficLight.update(delta);
+        }
     }
 
     private void removeHiddenCars(Queue<Car> cars) {
@@ -74,4 +86,6 @@ public class TrafficItems {
         tmp.addAll(mWestCarQueue);
         return tmp;
     }
+
+    public  TrafficLight[] getTrafficLights() {return this.trafficLights; }
 }
