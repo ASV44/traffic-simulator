@@ -17,6 +17,8 @@ class Car {
     float height;
     float angle;
     CarMoveDirection moveDirection;
+    boolean hasLeftScreen;
+    boolean hasAppearedOnScreen;
     private float speed;
     private Texture skin;
     private Animation<TextureRegion> spriteAnimation;
@@ -36,6 +38,8 @@ class Car {
     private boolean turning;
 
     Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
+        hasLeftScreen = false;
+        hasAppearedOnScreen = true;
         screen_width = Gdx.graphics.getWidth();
         screen_height = Gdx.graphics.getHeight();
 //        x = 0.489f * screen_width;
@@ -48,9 +52,8 @@ class Car {
         frames = new TextureRegion[frameNumber];
         TextureRegion[][] temp_frames;
         temp_frames = TextureRegion.split(skin,skin.getWidth() / frameNumber, skin.getHeight());
-        for(int i = 0; i < frameNumber; i++) {
-            frames[i] = temp_frames[0][i];
-        }
+
+        System.arraycopy(temp_frames[0], 0, frames, 0, frameNumber);
         currentFrame = frames[0];
 
         initTurnRightFrames(frames);
@@ -138,6 +141,7 @@ class Car {
                 y += speed * this.speed;
                 if (y > screen_height) {
                     y = 0 - height;
+                    hasLeftScreen = true;
                 }
                 break;
             case 90:
@@ -145,6 +149,7 @@ class Car {
                 x -= speed * this.speed;
                 if(x < 0 - height) {
                     x = screen_width + height;
+                    hasLeftScreen = true;
                 }
                 break;
             case 180:
@@ -152,6 +157,7 @@ class Car {
                 y -= speed * this.speed;
                 if(y < 0 - height) {
                     y = screen_height + height;
+                    hasLeftScreen = true;
                 }
                 break;
             case 270:
@@ -159,6 +165,7 @@ class Car {
                 x += speed * this.speed;
                 if(x > screen_width) {
                     x = 0 - height;
+                    hasLeftScreen = true;
                 }
                 break;
         }
