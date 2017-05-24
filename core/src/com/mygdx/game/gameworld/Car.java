@@ -9,13 +9,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * Created by hackintosh on 5/16/17.
  */
 
-public class Car {
-    public float x;
-    public float y;
-    public float width;
-    public float height;
-    public float angle;
+class Car {
     public float turnPoint_y = 0;//0.342f * screen_height;
+    float x;
+    float y;
+    float width;
+    float height;
+    float angle;
+    CarMoveDirection moveDirection;
+    boolean hasLeftScreen;
+    boolean hasAppearedOnScreen;
     private float speed;
     private Texture skin;
     private Animation<TextureRegion> spriteAnimation;
@@ -32,10 +35,11 @@ public class Car {
     private float turnLeftRadius;
     private float turningDelta_x;
     private float turningDelta_y;
-
     private boolean turning;
 
-    public Car(int type, int frameNumber, float angle) {
+    Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
+        hasLeftScreen = false;
+        hasAppearedOnScreen = true;
         screen_width = Gdx.graphics.getWidth();
         screen_height = Gdx.graphics.getHeight();
 //        x = 0.489f * screen_width;
@@ -48,9 +52,8 @@ public class Car {
         frames = new TextureRegion[frameNumber];
         TextureRegion[][] temp_frames;
         temp_frames = TextureRegion.split(skin,skin.getWidth() / frameNumber, skin.getHeight());
-        for(int i = 0; i < frameNumber; i++) {
-            frames[i] = temp_frames[0][i];
-        }
+
+        System.arraycopy(temp_frames[0], 0, frames, 0, frameNumber);
         currentFrame = frames[0];
 
         initTurnRightFrames(frames);
@@ -67,6 +70,8 @@ public class Car {
         turnLeftRadius = 0.094f * screen_width;
         turningDelta_x = 0.0f;
         turningDelta_y = 0.0f;
+
+        moveDirection = moveDir;
 
     }
 
@@ -98,7 +103,6 @@ public class Car {
 
     private void initTurnRightFrames(TextureRegion[] frames) {
         rightTurnSignal = new TextureRegion[2];
-
         rightTurnSignal[0] = frames[0];
         rightTurnSignal[1] = frames[2];
     }
@@ -110,72 +114,94 @@ public class Car {
         leftTurnSignal[1] = frames[1];
     }
 
-    public void update(float delta) {
+    void update(float delta) {
         stateTime += delta;
         if(turnSignals) {
             currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
         }
     }
 
-    public void move(int speed) {
+    void move(int speed) {
         int turnDelta = 2;
         if(!turnSignals && !currentFrame.equals(frames[0])) {
             currentFrame = frames[0];
         }
-//        if((y >= turnPoint_y - speed && y <= turnPoint_y + speed) || turning) {
-//        if((y >= 0.319f * screen_height - turnDelta && y <= 0.319f * screen_height + turnDelta && angle == 0f)
-//                || (x >= 0.394f * screen_width - turnDelta && x <= 0.394f * screen_width + turnDelta && angle == -90f)
-//                || (y <= 0.556f * screen_height + turnDelta && y >= 0.556f * screen_height - turnDelta && angle == -180f)
-//                || (x <= 0.53f * screen_width + turnDelta && x >= 0.53f * screen_width - turnDelta && angle == -270f)
-//                || turning) {
-//            if(!turning) {
-//                turning = true;
-//                turningDelta_x = 0.0f;
-//                turningDelta_y = 0.0f;
-//            }
-//            turnRight();
-//        }
+
+        switch (moveDirection) {
+            case TurnLeft:
+                turnCarLeft(turnDelta);
+                break;
+            case TurnRight:
+                turnCarRight(turnDelta);
+                break;
+        }
+
+        switch ((int) angle) {
+            case 0:
+                y += speed * this.speed;
+                if (y > screen_height) {
+                    y = 0 - height;
+                    hasLeftScreen = true;
+                }
+                break;
+            case 90:
+            case -270:
+                x -= speed * this.speed;
+                if(x < 0 - height) {
+                    x = screen_width + height;
+                    hasLeftScreen = true;
+                }
+                break;
+            case 180:
+            case -180:
+                y -= speed * this.speed;
+                if(y < 0 - height) {
+                    y = screen_height + height;
+                    hasLeftScreen = true;
+                }
+                break;
+            case 270:
+            case -90:
+                x += speed * this.speed;
+                if(x > screen_width) {
+                    x = 0 - height;
+                    hasLeftScreen = true;
+                }
+                break;
+        }
+    }
+
+    private void turnCarLeft(int turnDelta) {
         if ((y >= 0.421f * screen_height - turnDelta && y <= 0.421f * screen_height + turnDelta && angle == 0f)
                 || (x >= 0.45f * screen_width - turnDelta && x <= 0.45f * screen_width + turnDelta && angle == -90f)
                 || (y <= 0.445f * screen_height + turnDelta && y >= 0.445f * screen_height - turnDelta && angle == -180f)
                 || (x <= 0.469f * screen_width + turnDelta && x >= 0.469f * screen_width - turnDelta && angle == -270f)
                 || turning) {
-            if(!turning) {
+            if (!turning) {
                 turning = true;
                 turningDelta_x = 0.0f;
                 turningDelta_y = 0.0f;
             }
             turnLeft();
         }
-        else {
-            if(angle == 0f) {
-                y += speed * this.speed;
-                if (y > screen_height) {
-                    y = 0 - height;
-                }
+    }
+
+    private void turnCarRight(int turnDelta) {
+        if ((y >= 0.319f * screen_height - turnDelta && y <= 0.319f * screen_height + turnDelta && angle == 0f)
+                || (x >= 0.394f * screen_width - turnDelta && x <= 0.394f * screen_width + turnDelta && angle == -90f)
+                || (y <= 0.556f * screen_height + turnDelta && y >= 0.556f * screen_height - turnDelta && angle == -180f)
+                || (x <= 0.53f * screen_width + turnDelta && x >= 0.53f * screen_width - turnDelta && angle == -270f)
+                || turning) {
+            if (!turning) {
+                turning = true;
+                turningDelta_x = 0.0f;
+                turningDelta_y = 0.0f;
             }
-            else if(angle == 90f || angle == -270f) {
-                x -= speed * this.speed;
-                if(x < 0 - height) {
-                    x = screen_width + height;
-                }
-            }
-            else  if(angle == 180f || angle == -180f) {
-                y -= speed * this.speed;
-                if(y < 0 - height) {
-                    y = screen_height + height;
-                }
-            }
-            else if(angle == 270f || angle == -90f) {
-                x += speed * this.speed;
-                if(x > screen_width) {
-                    x = 0 - height;
-                }
-            }
+            turnRight();
         }
     }
 
-    public void turnRight() {
+    private void turnRight() {
         if(angle <= 0f && angle > -90f) {
             angle -= 3;
             if (angle <= -90f) {
@@ -231,7 +257,7 @@ public class Car {
         Gdx.app.log("Angle","" + angle);
     }
 
-    public void turnLeft() {
+    private void turnLeft() {
         if(angle >= 0f && angle < 90f) {
             angle += 3;
             if (angle >= 90f) {
@@ -287,13 +313,13 @@ public class Car {
         Gdx.app.log("Angle","" + angle);
     }
 
-    public void stop() {
+    void stop() {
         if(!turnSignals) {
             currentFrame = frames[3];
         }
     }
 
-    public void turnSignalsRight() {
+    void turnSignalsRight() {
         if(turnSignals) {
             turnSignals = false;
             stateTime = 0;
@@ -304,8 +330,8 @@ public class Car {
             turnSignals = true;
         }
     }
-    
-    public void turnSignalsLeft() {
+
+    void turnSignalsLeft() {
         if(turnSignals) {
             turnSignals= false;
             stateTime = 0;
@@ -317,5 +343,11 @@ public class Car {
         }
     }
 
-    public TextureRegion getCurrentFrame() { return this.currentFrame; }
+    TextureRegion getCurrentFrame() {
+        return this.currentFrame;
+    }
+
+    boolean canMove() {
+        return true;
+    }
 }

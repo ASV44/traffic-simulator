@@ -34,13 +34,13 @@ public class TrafficRenderer {
         batch.draw(items.getCrossroad(), 0, 0, screenWidth, screenHeight);
 //        batch.draw(items.getCars().get(i).getCurrentFrame(),items.getCars().get(i).x,items.getCars().get(i).y,
 //                items.getCars().get(i).width, items.getCars().get(i).height);
-        for(int i = 0; i < items.getCars().size(); i++) {
+        for (int i = 0; i < items.getCars().size(); i++) {
             batch.draw(items.getCars().get(i).getCurrentFrame(), items.getCars().get(i).x, items.getCars().get(i).y,
                     items.getCars().get(i).width / 2, items.getCars().get(i).height / 2,
                     items.getCars().get(i).width, items.getCars().get(i).height, 1, 1, items.getCars().get(i).angle);
 
-            Gdx.app.log("Sample_Car_X","" + items.getCars().get(i).x);
-            Gdx.app.log("Sample_Car_Y","" + items.getCars().get(i).y);
+            Gdx.app.log("Sample_Car_X", "" + items.getCars().get(i).x);
+            Gdx.app.log("Sample_Car_Y", "" + items.getCars().get(i).y);
         }
         for(TrafficLight trafficLight : items.getTrafficLights()) {
             batch.draw(trafficLight.currentFrame,trafficLight.x,trafficLight.y,

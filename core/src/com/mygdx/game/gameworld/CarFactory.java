@@ -8,17 +8,23 @@ import java.util.Random;
  * Created by the-french-cat on 19/05/17.
  */
 
-public class CarFactory {
+class CarFactory {
     private Random mRandGen;
     CarFactory() {
         mRandGen = new Random();
     }
 
-    protected Car newCar(CarTypes carType) {
+    Car newCar(CarTypes carType) {
         float initAngle = getInitAngle();
         CarMoveDirection carMoveDirection = getMoveDirection();
 
-        return new Car(carType.type, carType.numSprites, initAngle);
+        return new Car(carType.type, carType.numSprites, initAngle, carMoveDirection);
+    }
+
+    Car newCar(CarTypes carType, float initAngle) {
+        CarMoveDirection carMoveDirection = getMoveDirection();
+
+        return new Car(carType.type, carType.numSprites, initAngle, carMoveDirection);
     }
 
     private CarMoveDirection getMoveDirection() {
@@ -38,10 +44,10 @@ public class CarFactory {
                 angle = -90f;
                 break;
             case 2:
-                angle = -180;
+                angle = -180f;
                 break;
             case 3:
-                angle = -270;
+                angle = -270f;
                 break;
         }
         return angle;
