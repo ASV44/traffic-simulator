@@ -10,45 +10,49 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 
 class Car {
-    public float turnPoint_y = 0;//0.342f * screen_height;
+
+    /*public and package-private fields*/
     boolean canMove;
-    float x;
-    float y;
-    float width;
-    float height;
-    float angle;
-    CarMoveDirection moveDirection;
     boolean hasLeftScreen;
     boolean hasAppearedOnScreen;
+    CarMoveDirection moveDirection;
+    float angle;
+    float height;
+    float width;
+    float x;
+    float y;
 
-    private float speed;
-    private Texture skin;
+    /*private fields*/
     private Animation<TextureRegion> spriteAnimation;
-    private TextureRegion currentFrame;
-    private TextureRegion[] frames;
-    private TextureRegion[] rightTurnSignal;
-    private TextureRegion[] leftTurnSignal;
+    private boolean turning;
+    private boolean turned;
     private boolean turnSignals;
     private float stateTime;
     private float screen_width;
-    public float turnPoint_x = 0.102f * screen_width;
     private float screen_height;
     private float turnRightRadius;
     private float turnLeftRadius;
     private float turningDelta_x;
+    private float turnPoint_x;
+    private float turnPoint_y;
+    private float speed;
     private float turningDelta_y;
-    private boolean turning;
-    private boolean turned;
+    private Texture skin;
+    private TextureRegion currentFrame;
+    private TextureRegion[] frames;
+    private TextureRegion[] rightTurnSignal;
+    private TextureRegion[] leftTurnSignal;
 
+    /*constructors*/
     Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
+        turnPoint_y = 0;
+        turnPoint_x = 0.102f * screen_width;
         canMove = true;
         turned = false;
         hasLeftScreen = false;
         hasAppearedOnScreen = true;
         screen_width = Gdx.graphics.getWidth();
         screen_height = Gdx.graphics.getHeight();
-//        x = 0.489f * screen_width;
-//        y = 0;
         initPosition(angle);
         width = 0.052f * screen_width;
         height = 0.175f * screen_height;
@@ -77,48 +81,9 @@ class Car {
         turningDelta_y = 0.0f;
 
         moveDirection = moveDir;
-
     }
 
-    private void initPosition(float angle) {
-        int direction = (int) angle;
-
-        switch (direction) {
-            case 0:
-                x = 0.489f * screen_width;
-                y = 0 - height;
-                break;
-            case -90:
-                x = 0 - height;
-                y = 0.386f * screen_height;
-                break;
-            case -180:
-                x = 0.429f * screen_width;
-                y = screen_height + height;
-                break;
-            case -270:
-                x = screen_width + height;
-                y = 0.494f * screen_height;
-                break;
-            default:
-                x = 0.489f * screen_width;
-                y = 0 - height;
-        }
-    }
-
-    private void initTurnRightFrames(TextureRegion[] frames) {
-        rightTurnSignal = new TextureRegion[2];
-        rightTurnSignal[0] = frames[0];
-        rightTurnSignal[1] = frames[2];
-    }
-
-    private void initTurnLeftFrames(TextureRegion[] frames) {
-        leftTurnSignal = new TextureRegion[2];
-
-        leftTurnSignal[0] = frames[0];
-        leftTurnSignal[1] = frames[1];
-    }
-
+    /*public methods*/
     void update(float delta) {
         stateTime += delta;
         if(turnSignals) {
@@ -175,6 +140,125 @@ class Car {
                 }
                 break;
         }
+    }
+
+    void stop() {
+        if (!turnSignals) {
+            currentFrame = frames[3];
+        }
+    }
+
+    TextureRegion getCurrentFrame() {
+        return this.currentFrame;
+    }
+
+    /*private methods*/
+    private void turnSignalsRight() {
+        if (turnSignals) {
+            turnSignals = false;
+            stateTime = 0;
+            currentFrame = frames[0];
+        } else {
+            spriteAnimation = new Animation<TextureRegion>(0.5f, rightTurnSignal);
+            turnSignals = true;
+        }
+    }
+
+    private void turnSignalsLeft() {
+        if (turnSignals) {
+            turnSignals = false;
+            stateTime = 0;
+            currentFrame = frames[0];
+        } else {
+            spriteAnimation = new Animation<TextureRegion>(0.5f, leftTurnSignal);
+            turnSignals = true;
+        }
+    }
+
+    private boolean canMove() {
+
+        if (!TrafficItems.NorthCarQueue.isEmpty()
+                && TrafficItems.NorthCarQueue.element().hashCode() == this.hashCode()) {
+            if ((TrafficItems.TrafficLights[2].state == TrafficLightState.Red ||
+                    TrafficItems.TrafficLights[2].state == TrafficLightState.Yellow)
+                    && x > TrafficItems.TrafficLights[2].x - TrafficItems.TrafficLights[2].width - 40
+                    && x < TrafficItems.TrafficLights[2].x - TrafficItems.TrafficLights[2].width - 30) {
+                canMove = false;
+            } else {
+                canMove = true;
+            }
+        } else if (!TrafficItems.SouthCarQueue.isEmpty()
+                && TrafficItems.SouthCarQueue.element().hashCode() == this.hashCode()) {
+            if ((TrafficItems.TrafficLights[0].state == TrafficLightState.Red ||
+                    TrafficItems.TrafficLights[2].state == TrafficLightState.Yellow)
+                    && x < TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 40
+                    && x > TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 30) {
+                canMove = false;
+            } else {
+                canMove = true;
+            }
+        } else if (!TrafficItems.WestCarQueue.isEmpty()
+                && TrafficItems.WestCarQueue.element().hashCode() == this.hashCode()) {
+            if ((TrafficItems.TrafficLights[1].state == TrafficLightState.Red ||
+                    TrafficItems.TrafficLights[2].state == TrafficLightState.Yellow)
+                    && x > TrafficItems.TrafficLights[1].y + TrafficItems.TrafficLights[1].height + 40
+                    && x < TrafficItems.TrafficLights[1].y + TrafficItems.TrafficLights[1].height + 30) {
+                canMove = false;
+            } else {
+                canMove = true;
+            }
+        } else {
+            if (!TrafficItems.EastCarQueue.isEmpty()
+                    && TrafficItems.EastCarQueue.element().hashCode() == this.hashCode()
+                    && (TrafficItems.TrafficLights[2].state == TrafficLightState.Red ||
+                    TrafficItems.TrafficLights[2].state == TrafficLightState.Yellow)
+                    && x > TrafficItems.TrafficLights[2].y - TrafficItems.TrafficLights[2].height - 40
+                    && x < TrafficItems.TrafficLights[2].y - TrafficItems.TrafficLights[2].height - 30) {
+                canMove = false;
+            } else {
+                canMove = true;
+            }
+        }
+        return canMove;
+    }
+
+    private void initPosition(float angle) {
+        int direction = (int) angle;
+
+        switch (direction) {
+            case 0:
+                x = 0.489f * screen_width;
+                y = 0 - height;
+                break;
+            case -90:
+                x = 0 - height;
+                y = 0.386f * screen_height;
+                break;
+            case -180:
+                x = 0.429f * screen_width;
+                y = screen_height + height;
+                break;
+            case -270:
+                x = screen_width + height;
+                y = 0.494f * screen_height;
+                break;
+            default:
+                x = 0.489f * screen_width;
+                y = 0 - height;
+        }
+    }
+
+    private void initTurnRightFrames(TextureRegion[] frames) {
+        rightTurnSignal = new TextureRegion[2];
+        rightTurnSignal[0] = frames[0];
+        rightTurnSignal[1] = frames[2];
+    }
+
+    private void initTurnLeftFrames(TextureRegion[] frames) {
+        leftTurnSignal = new TextureRegion[2];
+
+        leftTurnSignal[0] = frames[0];
+        leftTurnSignal[1] = frames[1];
     }
 
     private void turnCarLeft(int turnDelta) {
@@ -330,86 +414,5 @@ class Car {
             y += turningDelta_y;
         }
         Gdx.app.log("Angle","" + angle);
-    }
-
-    void stop() {
-        if(!turnSignals) {
-            currentFrame = frames[3];
-        }
-    }
-
-    void turnSignalsRight() {
-        if(turnSignals) {
-            turnSignals = false;
-            stateTime = 0;
-            currentFrame = frames[0];
-        }
-        else {
-            spriteAnimation = new Animation<TextureRegion>(0.5f, rightTurnSignal);
-            turnSignals = true;
-        }
-    }
-
-    void turnSignalsLeft() {
-        if(turnSignals) {
-            turnSignals= false;
-            stateTime = 0;
-            currentFrame = frames[0];
-        }
-        else {
-            spriteAnimation = new Animation<TextureRegion>(0.5f, leftTurnSignal);
-            turnSignals = true;
-        }
-    }
-
-    TextureRegion getCurrentFrame() {
-        return this.currentFrame;
-    }
-
-    boolean canMove() {
-
-        if (!TrafficItems.mNorthCarQueue.isEmpty()
-                && TrafficItems.mNorthCarQueue.element().hashCode() == this.hashCode()) {
-            if ((TrafficItems.trafficLights[2].state == TrafficLightState.Red ||
-                    TrafficItems.trafficLights[2].state == TrafficLightState.Yellow)
-                    && x > TrafficItems.trafficLights[2].x - TrafficItems.trafficLights[2].width - 40
-                    && x < TrafficItems.trafficLights[2].x - TrafficItems.trafficLights[2].width - 30) {
-                canMove = false;
-            } else {
-                canMove = true;
-            }
-        } else if (!TrafficItems.mSouthCarQueue.isEmpty()
-                && TrafficItems.mSouthCarQueue.element().hashCode() == this.hashCode()) {
-            if ((TrafficItems.trafficLights[0].state == TrafficLightState.Red ||
-                    TrafficItems.trafficLights[2].state == TrafficLightState.Yellow)
-                    && x < TrafficItems.trafficLights[0].x + TrafficItems.trafficLights[0].width + 40
-                    && x > TrafficItems.trafficLights[0].x + TrafficItems.trafficLights[0].width + 30) {
-                canMove = false;
-            } else {
-                canMove = true;
-            }
-        } else if (!TrafficItems.mWestCarQueue.isEmpty()
-                && TrafficItems.mWestCarQueue.element().hashCode() == this.hashCode()) {
-            if ((TrafficItems.trafficLights[1].state == TrafficLightState.Red ||
-                    TrafficItems.trafficLights[2].state == TrafficLightState.Yellow)
-                    && x > TrafficItems.trafficLights[1].y + TrafficItems.trafficLights[1].height + 40
-                    && x < TrafficItems.trafficLights[1].y + TrafficItems.trafficLights[1].height + 30) {
-                canMove = false;
-            } else {
-                canMove = true;
-            }
-        } else {
-            if (!TrafficItems.mEastCarQueue.isEmpty()
-                    && TrafficItems.mEastCarQueue.element().hashCode() == this.hashCode()
-                    && (TrafficItems.trafficLights[2].state == TrafficLightState.Red ||
-                    TrafficItems.trafficLights[2].state == TrafficLightState.Yellow)
-                    && x > TrafficItems.trafficLights[2].y - TrafficItems.trafficLights[2].height - 40
-                    && x < TrafficItems.trafficLights[2].y - TrafficItems.trafficLights[2].height - 30) {
-                canMove = false;
-            } else {
-                canMove = true;
-            }
-        }
-        return canMove;
     }
 }
