@@ -181,6 +181,7 @@ class Car {
                 turning = true;
                 turningDelta_x = 0.0f;
                 turningDelta_y = 0.0f;
+                turnSignalsLeft();
             }
             turnLeft();
         }
@@ -196,6 +197,7 @@ class Car {
                 turning = true;
                 turningDelta_x = 0.0f;
                 turningDelta_y = 0.0f;
+                turnSignalsRight();
             }
             turnRight();
         }
@@ -207,6 +209,7 @@ class Car {
             if (angle <= -90f) {
                 angle = -90f;
                 turning = false;
+                turnSignalsRight();
             }
             x -= turningDelta_x;
             y -= turningDelta_y;
@@ -220,6 +223,7 @@ class Car {
             if(angle <= -180f) {
                 angle = -180f;
                 turning = false;
+                turnSignalsRight();
             }
             x -= turningDelta_x;
             y += turningDelta_y;
@@ -233,6 +237,7 @@ class Car {
             if(angle <= -270f) {
                 angle = -270f;
                 turning = false;
+                turnSignalsRight();
             }
             x += turningDelta_x;
             y += turningDelta_y;
@@ -246,6 +251,7 @@ class Car {
             if(angle <= -360f) {
                 angle = 0f;
                 turning = false;
+                turnSignalsRight();
             }
             x += turningDelta_x;
             y -= turningDelta_y;
@@ -263,6 +269,7 @@ class Car {
             if (angle >= 90f) {
                 angle = -270f;
                 turning = false;
+                turnSignalsLeft();
             }
             x += turningDelta_x;
             y -= turningDelta_y;
@@ -276,6 +283,7 @@ class Car {
             if(angle >= -180f) {
                 angle = -180f;
                 turning = false;
+                turnSignalsLeft();
             }
             x += turningDelta_x;
             y += turningDelta_y;
@@ -289,6 +297,7 @@ class Car {
             if(angle >= -90f) {
                 angle = -90f;
                 turning = false;
+                turnSignalsLeft();
             }
             x -= turningDelta_x;
             y += turningDelta_y;
@@ -302,6 +311,7 @@ class Car {
             if(angle >= 0f) {
                 angle = 0f;
                 turning = false;
+                turnSignalsLeft();
             }
             x -= turningDelta_x;
             y -= turningDelta_y;
