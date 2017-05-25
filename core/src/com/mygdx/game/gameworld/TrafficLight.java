@@ -9,15 +9,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * Created by hackintosh on 5/23/17.
  */
 
-public class TrafficLight {
-    public float x;
-    public float y;
-    public float width;
-    public float height;
-    public float angle;
-    public TextureRegion currentFrame;
-    public TrafficLightState state;
-    public TrafficLightState prevState;
+class TrafficLight {
+
+    /*public and package-private fields*/
+    float x;
+    float y;
+    float width;
+    float height;
+    float angle;
+    TextureRegion currentFrame;
+    TrafficLightState state;
+    TrafficLightState prevState;
+
+    /*private fields*/
     private Texture skin;
     private Animation<TextureRegion> spriteAnimation;
     private TextureRegion[] frames;
@@ -26,10 +30,11 @@ public class TrafficLight {
     private TextureRegion[] flashingGreenFrames;
     private TextureRegion[] flashingYellowFrames;
 
-    public TrafficLight(int position) {
+    /*constructors*/
+    TrafficLight(int position) {
         float screen_width = Gdx.graphics.getWidth();
         float screen_height = Gdx.graphics.getHeight();
-        initPosition(position, screen_width, screen_height);
+        setInitPosition(position, screen_width, screen_height);
         width = 0.032f * screen_width;
         height = 0.113f * screen_height;
         skin = new Texture(Gdx.files.internal("traffic_light.png"));
@@ -52,7 +57,69 @@ public class TrafficLight {
         stateTime = 0;
     }
 
-    private void initPosition(int position, float width, float height) {
+    /*public methods*/
+    void green() {
+        currentFrame = frames[1];
+        setLight(TrafficLightState.Green, 6f);
+    }
+
+    void yellow() {
+        currentFrame = frames[2];
+        setLight(TrafficLightState.Yellow, 1.5f);
+
+    }
+
+    void red() {
+        currentFrame = frames[3];
+        setLight(TrafficLightState.Red, 6f);
+    }
+
+    void flashingGreen() {
+        spriteAnimation = new Animation<TextureRegion>(0.5f, flashingGreenFrames);
+        setLight(TrafficLightState.FlashignGreen, 2f);
+    }
+
+    void flashingYellow() {
+        spriteAnimation = new Animation<TextureRegion>(0.5f, flashingYellowFrames);
+        setLight(TrafficLightState.FlashingYellow, 3f);
+    }
+
+    void update(float delta) {
+        stateTime += delta;
+        if (state == TrafficLightState.FlashignGreen || state == TrafficLightState.FlashingYellow) {
+            currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
+        }
+        frameStateTime -= delta;
+        changeState();
+    }
+
+    /*private methods*/
+    private void changeState() {
+        if (frameStateTime < 0) {
+            switch (state) {
+                case Green:
+                    flashingGreen();
+                    break;
+                case Yellow:
+                    if (prevState == TrafficLightState.FlashignGreen) {
+                        red();
+                    } else {
+                        green();
+                    }
+                    break;
+                case Red:
+                    yellow();
+                    break;
+                case FlashingYellow:
+                    break;
+                case FlashignGreen:
+                    yellow();
+                    break;
+            }
+        }
+    }
+
+    private void setInitPosition(int position, float width, float height) {
         switch (position) {
             case 0:
                 x = 0.592f * width;
@@ -77,72 +144,9 @@ public class TrafficLight {
         }
     }
 
-    public void green() {
-        currentFrame = frames[1];
+    private void setLight(TrafficLightState lightColor, float timeInterval) {
         prevState = state;
-        state = TrafficLightState.Green;
-        frameStateTime = 6f;
-    }
-
-    public void yellow() {
-        currentFrame = frames[2];
-        prevState = state;
-        state = TrafficLightState.Yellow;
-        frameStateTime = 1.5f;
-    }
-
-    public void red() {
-        currentFrame = frames[3];
-        prevState = state;
-        state = TrafficLightState.Red;
-        frameStateTime = 5f;
-    }
-
-    public void flashingGreen() {
-        spriteAnimation = new Animation<TextureRegion>(0.5f, flashingGreenFrames);
-        prevState = state;
-        state = TrafficLightState.FlashignGreen;
-        frameStateTime = 2;
-    }
-
-    public void flashingYellow() {
-        spriteAnimation = new Animation<TextureRegion>(0.5f, flashingYellowFrames);
-        prevState = state;
-        state = TrafficLightState.FlashingYellow;
-        frameStateTime = 3;
-    }
-
-    public void update(float delta) {
-        stateTime += delta;
-        if (state == TrafficLightState.FlashignGreen || state == TrafficLightState.FlashingYellow) {
-            currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
-        }
-        frameStateTime -= delta;
-        changeState();
-    }
-
-    private void changeState() {
-        if (frameStateTime < 0) {
-            switch (state) {
-                case Green:
-                    flashingGreen();
-                    break;
-                case Yellow:
-                    if (prevState == TrafficLightState.FlashignGreen) {
-                        red();
-                    } else {
-                        green();
-                    }
-                    break;
-                case Red:
-                    yellow();
-                    break;
-                case FlashingYellow:
-                    break;
-                case FlashignGreen:
-                    yellow();
-                    break;
-            }
-        }
+        state = lightColor;
+        frameStateTime = timeInterval;
     }
 }

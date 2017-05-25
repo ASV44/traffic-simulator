@@ -9,11 +9,18 @@ import java.util.Random;
  */
 
 class CarFactory {
+
+    /*public fields*/
+
+    /*private fields*/
     private Random mRandGen;
+
+    /*constructors*/
     CarFactory() {
         mRandGen = new Random();
     }
 
+    /*public and package-private methods*/
     Car newCar(CarTypes carType) {
         float initAngle = getInitAngle();
         CarMoveDirection carMoveDirection = getMoveDirection();
@@ -27,6 +34,7 @@ class CarFactory {
         return new Car(carType.type, carType.numSprites, initAngle, carMoveDirection);
     }
 
+    /*private methods*/
     private CarMoveDirection getMoveDirection() {
         int random = mRandGen.nextInt(CarMoveDirection.values().length);
         return (CarMoveDirection.values())[random];

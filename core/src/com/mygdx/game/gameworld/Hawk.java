@@ -17,8 +17,9 @@ public class Hawk {
     public float y;
     public float width;
     public float height;
-    public Texture mTexture;
+    public Texture texture;
     public TextureRegion currentFrame;
+
     /*private fields*/
     private Sound mSound;
     private float stateTime;
@@ -29,19 +30,19 @@ public class Hawk {
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
 
-        mTexture = new Texture(Gdx.files.internal("hawk.png"));
+        texture = new Texture(Gdx.files.internal("hawk.png"));
         mSound = Gdx.audio.newSound(Gdx.files.internal("hawk.ogg"));
         x = -50f;
         y = -50f;
         /*currentFrame = new TextureRegion();
-        currentFrame = TextureRegion.split(mTexture, mTexture.getWidth(), mTexture.getHeight())[0][0];
+        currentFrame = TextureRegion.split(texture, texture.getWidth(), texture.getHeight())[0][0];
         */
         Timer.schedule(getNewHawkTask(), 5, 15);
     }
 
     /*public methods*/
     void dispose() {
-        mTexture.dispose();
+        texture.dispose();
         mSound.dispose();
     }
 
