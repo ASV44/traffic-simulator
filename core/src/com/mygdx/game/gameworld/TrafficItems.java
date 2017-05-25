@@ -1,7 +1,6 @@
 package com.mygdx.game.gameworld;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.LinkedList;
@@ -22,11 +21,12 @@ public class TrafficItems {
     private Texture mCrossroad;
     private CarFactory mCarFactory;
     private Car mCar;
-    private Music mHawkSound;
+
+    private Hawk mHawk;
 
     public TrafficItems() {
         mCrossroad = new Texture(Gdx.files.internal("crossroad2.png"));
-        mHawkSound = Gdx.audio.newMusic(Gdx.files.internal("hawk.ogg"));
+        mHawk = new Hawk();
         trafficLights = new TrafficLight[4];
         for (int i = 0; i < 4; i++) {
             trafficLights[i] = new TrafficLight(i);
@@ -50,7 +50,7 @@ public class TrafficItems {
 
     public void update(float delta) {
         updateTrafficLights(delta);
-        playHawkSound();
+        mHawk.update(delta);
         moveCars(mNorthCarQueue, delta);
         moveCars(mSouthCarQueue, delta);
         moveCars(mWestCarQueue, delta);
@@ -62,12 +62,6 @@ public class TrafficItems {
         for (TrafficLight trafficLight : trafficLights) {
             trafficLight.update(delta);
         }
-    }
-
-    private void playHawkSound() {
-        boolean playHawkSound = false;
-        if (playHawkSound) mHawkSound.play();
-
     }
 
     private void removeHiddenCars() {
@@ -112,7 +106,7 @@ public class TrafficItems {
 
     public void dispose() {
         mCrossroad.dispose();
-        mHawkSound.dispose();
+        mHawk.dispose();
     }
 
     Texture getCrossroad() {
@@ -128,7 +122,11 @@ public class TrafficItems {
         return tmp;
     }
 
-    public TrafficLight[] getTrafficLights() {
+    TrafficLight[] getTrafficLights() {
         return this.trafficLights;
+    }
+
+    Hawk getHawk() {
+        return this.mHawk;
     }
 }

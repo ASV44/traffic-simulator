@@ -23,17 +23,10 @@ public class TrafficRenderer {
     }
 
     public void render() {
-
-//        Gdx.app.log("ScreenWidth","" + screenWidth);
-//        Gdx.app.log("ScreenHeight","" + screenHeight);
-        //Gdx.gl.glClearColor(255, 255, 255, 0);
         Gdx.gl.glClearColor(0.36f, 0.45f, 0.043f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        //batch.draw(items.getCrossroad(), 0, 0, items.getCrossroad().getWidth() * k, screenHeight);
         batch.draw(items.getCrossroad(), 0, 0, screenWidth, screenHeight);
-//        batch.draw(items.getCars().get(i).getCurrentFrame(),items.getCars().get(i).x,items.getCars().get(i).y,
-//                items.getCars().get(i).width, items.getCars().get(i).height);
         for (int i = 0; i < items.getCars().size(); i++) {
             batch.draw(items.getCars().get(i).getCurrentFrame(), items.getCars().get(i).x, items.getCars().get(i).y,
                     items.getCars().get(i).width / 2, items.getCars().get(i).height / 2,
@@ -47,9 +40,8 @@ public class TrafficRenderer {
                     trafficLight.width / 2, trafficLight.height / 2,
                     trafficLight.width, trafficLight.height, 1, 1, trafficLight.angle);
         }
-//        batch.draw(items.getCars().get(i).getCurrentFrame(), items.getCars().get(i).x,items.getCars().get(i).y,
-//                items.getCars().get(i).turnPoint_x, items.getCars().get(i).turnPoint_y,
-//                items.getCars().get(i).width, items.getCars().get(i).height, 1, 1, items.getCars().get(i).angle);
+        Hawk hawk = items.getHawk();
+        batch.draw(hawk.mTexture, hawk.x, hawk.y);
         batch.end();
 
     }

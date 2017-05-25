@@ -30,9 +30,6 @@ public class TrafficLight {
         float screen_width = Gdx.graphics.getWidth();
         float screen_height = Gdx.graphics.getHeight();
         initPosition(position, screen_width, screen_height);
-//        this.x = x;
-//        this.y = y;
-//        this.angle = angle;
         width = 0.032f * screen_width;
         height = 0.113f * screen_height;
         skin = new Texture(Gdx.files.internal("traffic_light.png"));
@@ -125,8 +122,6 @@ public class TrafficLight {
     }
 
     private void changeState() {
-        //Gdx.app.log("framestatetime ", "" + frameStateTime);
-
         if (frameStateTime < 0) {
             switch (state) {
                 case Green:
