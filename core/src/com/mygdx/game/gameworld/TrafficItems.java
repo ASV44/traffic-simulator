@@ -43,6 +43,8 @@ public class TrafficItems {
         mNorthCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
         mSouthCarQueue.add(mCar);
+
+
     }
 
     public void update(float delta) {
@@ -92,6 +94,19 @@ public class TrafficItems {
                 } else {
                     car.stop();
                 }
+            }
+        }
+    }
+
+    private void movePersons(Queue<Person> persons, float delta) {
+        for (Person person : persons) {
+            if (!person.hasLeftScreen) {
+                person.update(delta);
+//                if (car.canMove) {
+                person.move(1);
+//                } else {
+//                    car.stop();
+//                }
             }
         }
     }
