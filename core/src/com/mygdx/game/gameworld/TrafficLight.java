@@ -15,22 +15,21 @@ public class TrafficLight {
     public float width;
     public float height;
     public float angle;
+    public TextureRegion currentFrame;
+    public TrafficLightState state;
+    public TrafficLightState prevState;
     private Texture skin;
     private Animation<TextureRegion> spriteAnimation;
-    public TextureRegion currentFrame;
     private TextureRegion[] frames;
     private float stateTime;
-
+    private float frameStateTime;
     private TextureRegion[] flashingGreenFrames;
     private TextureRegion[] flashingYellowFrames;
-
-    public String state;
-
 
     public TrafficLight(int position) {
         float screen_width = Gdx.graphics.getWidth();
         float screen_height = Gdx.graphics.getHeight();
-        initPosition(position,screen_width,screen_height);
+        initPosition(position, screen_width, screen_height);
 //        this.x = x;
 //        this.y = y;
 //        this.angle = angle;
@@ -39,13 +38,13 @@ public class TrafficLight {
         skin = new Texture(Gdx.files.internal("traffic_light.png"));
         frames = new TextureRegion[4];
         TextureRegion[][] temp_frames;
-        temp_frames = TextureRegion.split(skin,skin.getWidth() / 4, skin.getHeight());
-        for(int i = 0; i < 4; i++) {
+        temp_frames = TextureRegion.split(skin, skin.getWidth() / 4, skin.getHeight());
+        for (int i = 0; i < 4; i++) {
             frames[i] = temp_frames[0][i];
         }
 
         flashingGreenFrames = new TextureRegion[2];
-        flashingYellowFrames =  new TextureRegion[2];
+        flashingYellowFrames = new TextureRegion[2];
 
         flashingGreenFrames[0] = frames[0];
         flashingGreenFrames[1] = frames[1];
@@ -63,17 +62,17 @@ public class TrafficLight {
                 y = 0.522f * height;
                 angle = 0;
                 break;
-            case 1 :
+            case 1:
                 x = 0.498f * width;
                 y = 0.24f * height;
                 angle = -90f;
                 break;
-            case 2 :
+            case 2:
                 x = 0.34f * width;
                 y = 0.415f * height;
                 angle = -180f;
                 break;
-            case 3 :
+            case 3:
                 x = 0.44f * width;
                 y = 0.7f * height;
                 angle = -270f;
@@ -82,38 +81,73 @@ public class TrafficLight {
     }
 
     public void green() {
-
         currentFrame = frames[1];
-        state = "green";
+        prevState = state;
+        state = TrafficLightState.Green;
+        frameStateTime = 6f;
     }
 
     public void yellow() {
-
         currentFrame = frames[2];
-        state = "yellow";
+        prevState = state;
+        state = TrafficLightState.Yellow;
+        frameStateTime = 1.5f;
     }
 
     public void red() {
-
         currentFrame = frames[3];
-        state = "red";
+        prevState = state;
+        state = TrafficLightState.Red;
+        frameStateTime = 5f;
     }
 
     public void flashingGreen() {
-        spriteAnimation = new Animation<TextureRegion>(0.5f,flashingGreenFrames);
-        state = "flashingGreen";
+        spriteAnimation = new Animation<TextureRegion>(0.5f, flashingGreenFrames);
+        prevState = state;
+        state = TrafficLightState.FlashignGreen;
+        frameStateTime = 2;
     }
 
     public void flashingYellow() {
-        spriteAnimation = new Animation<TextureRegion>(0.5f,flashingYellowFrames);
-        state = "flashingYellow";
+        spriteAnimation = new Animation<TextureRegion>(0.5f, flashingYellowFrames);
+        prevState = state;
+        state = TrafficLightState.FlashingYellow;
+        frameStateTime = 3;
     }
 
     public void update(float delta) {
         stateTime += delta;
-        if(state.equals("flashingGreen") || state.equals("flashingYellow")) {
+        if (state == TrafficLightState.FlashignGreen || state == TrafficLightState.FlashingYellow) {
             currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
         }
+        frameStateTime -= delta;
+        changeState();
     }
 
+    private void changeState() {
+        //Gdx.app.log("framestatetime ", "" + frameStateTime);
+
+        if (frameStateTime < 0) {
+            switch (state) {
+                case Green:
+                    flashingGreen();
+                    break;
+                case Yellow:
+                    if (prevState == TrafficLightState.FlashignGreen) {
+                        red();
+                    } else {
+                        green();
+                    }
+                    break;
+                case Red:
+                    yellow();
+                    break;
+                case FlashingYellow:
+                    break;
+                case FlashignGreen:
+                    yellow();
+                    break;
+            }
+        }
+    }
 }

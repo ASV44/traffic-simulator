@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 class Car {
     public float turnPoint_y = 0;//0.342f * screen_height;
+    boolean canMove;
     float x;
     float y;
     float width;
@@ -19,6 +20,7 @@ class Car {
     CarMoveDirection moveDirection;
     boolean hasLeftScreen;
     boolean hasAppearedOnScreen;
+
     private float speed;
     private Texture skin;
     private Animation<TextureRegion> spriteAnimation;
@@ -36,8 +38,11 @@ class Car {
     private float turningDelta_x;
     private float turningDelta_y;
     private boolean turning;
+    private boolean turned;
 
     Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
+        canMove = true;
+        turned = false;
         hasLeftScreen = false;
         hasAppearedOnScreen = true;
         screen_width = Gdx.graphics.getWidth();
@@ -119,6 +124,7 @@ class Car {
         if(turnSignals) {
             currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
         }
+        canMove();
     }
 
     void move(int speed) {
@@ -184,6 +190,7 @@ class Car {
                 turnSignalsLeft();
             }
             turnLeft();
+
         }
     }
 
@@ -194,12 +201,14 @@ class Car {
                 || (x <= 0.53f * screen_width + turnDelta && x >= 0.53f * screen_width - turnDelta && angle == -270f)
                 || turning) {
             if (!turning) {
+                turned = true;
                 turning = true;
                 turningDelta_x = 0.0f;
                 turningDelta_y = 0.0f;
                 turnSignalsRight();
             }
             turnRight();
+
         }
     }
 
@@ -358,6 +367,49 @@ class Car {
     }
 
     boolean canMove() {
-        return true;
+
+        if (!TrafficItems.mNorthCarQueue.isEmpty()
+                && TrafficItems.mNorthCarQueue.element().hashCode() == this.hashCode()) {
+            if ((TrafficItems.trafficLights[2].state == TrafficLightState.Red ||
+                    TrafficItems.trafficLights[2].state == TrafficLightState.Yellow)
+                    && x > TrafficItems.trafficLights[2].x - TrafficItems.trafficLights[2].width - 40
+                    && x < TrafficItems.trafficLights[2].x - TrafficItems.trafficLights[2].width - 30) {
+                canMove = false;
+            } else {
+                canMove = true;
+            }
+        } else if (!TrafficItems.mSouthCarQueue.isEmpty()
+                && TrafficItems.mSouthCarQueue.element().hashCode() == this.hashCode()) {
+            if ((TrafficItems.trafficLights[0].state == TrafficLightState.Red ||
+                    TrafficItems.trafficLights[2].state == TrafficLightState.Yellow)
+                    && x < TrafficItems.trafficLights[0].x + TrafficItems.trafficLights[0].width + 40
+                    && x > TrafficItems.trafficLights[0].x + TrafficItems.trafficLights[0].width + 30) {
+                canMove = false;
+            } else {
+                canMove = true;
+            }
+        } else if (!TrafficItems.mWestCarQueue.isEmpty()
+                && TrafficItems.mWestCarQueue.element().hashCode() == this.hashCode()) {
+            if ((TrafficItems.trafficLights[1].state == TrafficLightState.Red ||
+                    TrafficItems.trafficLights[2].state == TrafficLightState.Yellow)
+                    && x > TrafficItems.trafficLights[1].y + TrafficItems.trafficLights[1].height + 40
+                    && x < TrafficItems.trafficLights[1].y + TrafficItems.trafficLights[1].height + 30) {
+                canMove = false;
+            } else {
+                canMove = true;
+            }
+        } else {
+            if (!TrafficItems.mEastCarQueue.isEmpty()
+                    && TrafficItems.mEastCarQueue.element().hashCode() == this.hashCode()
+                    && (TrafficItems.trafficLights[2].state == TrafficLightState.Red ||
+                    TrafficItems.trafficLights[2].state == TrafficLightState.Yellow)
+                    && x > TrafficItems.trafficLights[2].y - TrafficItems.trafficLights[2].height - 40
+                    && x < TrafficItems.trafficLights[2].y - TrafficItems.trafficLights[2].height - 30) {
+                canMove = false;
+            } else {
+                canMove = true;
+            }
+        }
+        return canMove;
     }
 }
