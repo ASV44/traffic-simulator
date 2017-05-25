@@ -87,7 +87,7 @@ public class TrafficItems {
         for (Car car : cars) {
             if (!car.hasLeftScreen) {
                 car.update(delta);
-                if (car.canMove()) {
+                if (car.canMove) {
                     car.move(1);
                 } else {
                     car.stop();

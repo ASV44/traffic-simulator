@@ -124,6 +124,7 @@ class Car {
         if(turnSignals) {
             currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
         }
+        canMove();
     }
 
     void move(int speed) {
