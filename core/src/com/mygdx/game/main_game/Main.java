@@ -1,19 +1,20 @@
 package com.mygdx.game.main_game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.audio.Music;
 import com.mygdx.game.screens.TrafficScreen;
 
 public class Main extends Game {
     private TrafficScreen trafficScreen;
-	
-	@Override
+    private Music ambientSound;
+
+    @Override
 	public void create () {
-		Gdx.app.log("Screen_Width","" + Gdx.graphics.getWidth());
+        ambientSound = Gdx.audio.newMusic(Gdx.files.internal("ambient-sound.ogg"));
+        ambientSound.setLooping(true);
+        ambientSound.play();
+        Gdx.app.log("Screen_Width","" + Gdx.graphics.getWidth());
 		Gdx.app.log("Screen_Height","" + Gdx.graphics.getHeight());
         trafficScreen = new TrafficScreen();
         setScreen(trafficScreen);
@@ -21,7 +22,9 @@ public class Main extends Game {
 
 	
 	@Override
-	public void dispose () {
+    public void dispose() {
+        ambientSound.stop();
+        ambientSound.dispose();
         trafficScreen.dispose();
 	}
 }
