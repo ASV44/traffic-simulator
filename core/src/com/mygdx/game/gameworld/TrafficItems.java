@@ -27,14 +27,18 @@ public class TrafficItems {
     private Texture mCrossroad;
     private CarFactory mCarFactory;
     private Car mCar;
-    private Hawk mHawk;
+    private List<Hawk> mHawks;
+    private HawkFactory mHawkFactory;
 
     public PoliceCar policeCar;
 
     /*constructors*/
     public TrafficItems() {
         mCrossroad = new Texture(Gdx.files.internal("crossroad2.png"));
-        mHawk = new Hawk();
+        mHawkFactory = new HawkFactory();
+        mHawks = new ArrayList<Hawk>();
+        mHawks.add(mHawkFactory.newHawk(HawkTypes.RedHawk, 3, 11));
+        mHawks.add(mHawkFactory.newHawk(HawkTypes.BigBlackHawk, 5, 6));
         TrafficLights = new TrafficLight[4];
         for (int i = 0; i < 4; i++) {
             TrafficLights[i] = new TrafficLight(i);
@@ -43,7 +47,6 @@ public class TrafficItems {
         TrafficLights[2].red();
         TrafficLights[1].green();
         TrafficLights[3].green();
-
 
         mCarFactory = new CarFactory();
         NorthCarQueue = new LinkedList<Car>();
@@ -63,7 +66,7 @@ public class TrafficItems {
     /*public methods*/
     public void update(float delta) {
         updateTrafficLights(delta);
-        mHawk.update(delta);
+        updateHawks(delta);
         moveCars(NorthCarQueue, delta);
         moveCars(SouthCarQueue, delta);
         moveCars(WestCarQueue, delta);
@@ -75,9 +78,16 @@ public class TrafficItems {
         policeCar.move(1);
     }
 
+    private void updateHawks(float delta) {
+        for (Hawk hawk : mHawks) hawk.update(delta);
+    }
+
     public void dispose() {
         mCrossroad.dispose();
-        mHawk.dispose();
+        for (Hawk hawk : mHawks
+                ) {
+            hawk.dispose();
+        }
     }
 
     public Texture getCrossroad() {
@@ -98,8 +108,8 @@ public class TrafficItems {
         return this.TrafficLights;
     }
 
-    public Hawk getHawk() {
-        return this.mHawk;
+    public List<Hawk> getHawks() {
+        return this.mHawks;
     }
 
     /*private methods*/

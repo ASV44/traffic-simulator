@@ -30,7 +30,7 @@ public class TrafficRenderer {
 
     /*private methods*/
     public void render() {
-        Hawk hawk = items.getHawk();
+        List<Hawk> hawks = items.getHawks();
         List<Car> cars = items.getCars();
         Gdx.gl.glClearColor(0.36f, 0.45f, 0.043f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -48,7 +48,11 @@ public class TrafficRenderer {
             batch.draw(tl.currentFrame, tl.x, tl.y, tl.width / 2, tl.height / 2, tl.width,
                     tl.height, 1, 1, tl.angle);
         }
-        batch.draw(hawk.texture, hawk.x, hawk.y);
+
+        for (Hawk hawk : hawks) {
+            batch.draw(hawk.currentFrame, hawk.x, hawk.y, hawk.x / 2, hawk.y / 2, hawk.width,
+                    hawk.height, hawk.scale, hawk.scale, hawk.angle);
+        }
         batch.end();
 
     }
