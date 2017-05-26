@@ -29,6 +29,8 @@ public class TrafficItems {
     private Car mCar;
     private Hawk mHawk;
 
+    public PoliceCar policeCar;
+
     /*constructors*/
     public TrafficItems() {
         mCrossroad = new Texture(Gdx.files.internal("crossroad2.png"));
@@ -54,6 +56,8 @@ public class TrafficItems {
         NorthCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
         SouthCarQueue.add(mCar);
+
+        policeCar = new PoliceCar(0,CarMoveDirection.MoveForward);
     }
 
     /*public methods*/
@@ -66,6 +70,9 @@ public class TrafficItems {
         moveCars(EastCarQueue, delta);
         moveCars(FreeCarsQueue, delta);
         removeHiddenCars();
+
+        policeCar.update(delta);
+        policeCar.move(1);
     }
 
     public void dispose() {

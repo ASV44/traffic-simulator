@@ -41,6 +41,9 @@ public class TrafficRenderer {
                     cars.get(i).width / 2, cars.get(i).height / 2, cars.get(i).width,
                     cars.get(i).height, 1, 1, cars.get(i).angle);
         }
+        batch.draw(items.policeCar.getCurrentFrame(), items.policeCar.x, items.policeCar.y,
+                items.policeCar.width / 2, items.policeCar.height / 2, items.policeCar.width,
+                items.policeCar.height, 1, 1, items.policeCar.angle);
         for (TrafficLight tl : items.getTrafficLights()) {
             batch.draw(tl.currentFrame, tl.x, tl.y, tl.width / 2, tl.height / 2, tl.width,
                     tl.height, 1, 1, tl.angle);
