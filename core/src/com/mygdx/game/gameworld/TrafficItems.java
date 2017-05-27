@@ -22,12 +22,16 @@ public class TrafficItems {
     static Queue<Car> WestCarQueue;
     static TrafficLight[] TrafficLights;
     static List<Car> FreeCarsQueue;
+    static List<Person> PersonList;
 
     /*private fields*/
     private Texture mCrossroad;
     private CarFactory mCarFactory;
     private Car mCar;
     private Hawk mHawk;
+    private PersonFactory mPersonFactory;
+    private Person mPerson;
+
 
     /*constructors*/
     public TrafficItems() {
@@ -54,6 +58,16 @@ public class TrafficItems {
         NorthCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
         SouthCarQueue.add(mCar);
+
+        mPersonFactory = new PersonFactory();
+        PersonList = new ArrayList<Person>();
+
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person1);
+        PersonList.add(mPerson);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person2);
+        PersonList.add(mPerson);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person3);
+        PersonList.add(mPerson);
     }
 
     /*public methods*/
@@ -66,6 +80,10 @@ public class TrafficItems {
         moveCars(EastCarQueue, delta);
         moveCars(FreeCarsQueue, delta);
         removeHiddenCars();
+
+        movePersons(delta);
+        removeHiddenPersons();
+
     }
 
     public void dispose() {
@@ -84,6 +102,12 @@ public class TrafficItems {
         tmp.addAll(EastCarQueue);
         tmp.addAll(WestCarQueue);
         tmp.addAll(FreeCarsQueue);
+        return tmp;
+    }
+
+    public List<Person> getPersons() {
+        List<Person> tmp = new ArrayList<Person>();
+        tmp.addAll(PersonList);
         return tmp;
     }
 
@@ -148,4 +172,44 @@ public class TrafficItems {
         for (Car car : cars) updateCarPosition(car, delta);
     }
 
+    private void movePersons(float delta) {
+        for (Person person : PersonList) {
+            if (!person.hasLeftScreen) {
+                person.update(delta);
+//                if (car.canMove) {
+                person.move(1);
+//                } else {
+//                    car.stop();
+//                }
+            }
+        }
+    }
+
+    private void removeHiddenPersons() {
+        List<Integer> indexToRemove = new ArrayList<Integer>();
+        for(int i = 0; i < PersonList.size(); i++) {
+            if(PersonList.get(i).hasLeftScreen) {
+                indexToRemove.add(i);
+            }
+        }
+
+        for(int i: indexToRemove) {
+            Gdx.app.log("indextoRemove","" + i);
+            PersonList.remove(i);
+            for(int j = 0; j < PersonList.size(); j++) {
+                Gdx.app.log("afterRemoving", "" +PersonList.get(j));
+            }
+            mPerson = mPersonFactory.newPerson(PersonTypes.Person1);
+            PersonList.add(mPerson);
+            for(int j = 0; j < PersonList.size(); j++) {
+                Gdx.app.log("afterAdding", "" +PersonList.get(j).getCurrentFrame());
+            }
+        }
+
+//        if (!PersonQueue.isEmpty() && PersonQueue.element().hasLeftScreen) {
+//            PersonQueue.remove();
+//            mPerson = mPersonFactory.newPerson(PersonTypes.Person1);
+//            PersonQueue.add(mPerson);
+//        }
+    }
 }

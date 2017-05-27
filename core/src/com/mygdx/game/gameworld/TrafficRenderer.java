@@ -32,6 +32,7 @@ public class TrafficRenderer {
     public void render() {
         Hawk hawk = items.getHawk();
         List<Car> cars = items.getCars();
+        List<Person> persons = items.getPersons();
         Gdx.gl.glClearColor(0.36f, 0.45f, 0.043f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
@@ -41,6 +42,13 @@ public class TrafficRenderer {
                     cars.get(i).width / 2, cars.get(i).height / 2, cars.get(i).width,
                     cars.get(i).height, 1, 1, cars.get(i).angle);
         }
+        for (int i = 0; i < persons.size(); i++) {
+            Gdx.app.log("PersonToRender", ""+persons.get(i).getCurrentFrame());
+            batch.draw(persons.get(i).getCurrentFrame(), persons.get(i).x, persons.get(i).y,
+                    persons.get(i).width / 2, persons.get(i).height / 2, persons.get(i).width,
+                    persons.get(i).height, 1, 1, persons.get(i).angle);
+        }
+
         for (TrafficLight tl : items.getTrafficLights()) {
             batch.draw(tl.currentFrame, tl.x, tl.y, tl.width / 2, tl.height / 2, tl.width,
                     tl.height, 1, 1, tl.angle);

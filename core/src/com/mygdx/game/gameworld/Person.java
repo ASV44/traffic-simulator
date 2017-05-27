@@ -39,8 +39,8 @@ class Person {
         initPosition(angle, side);
         this.angle = angle;
         this.side = side;
-        width = 0.017f * screen_width;
-        height = 0.087f * screen_height;
+        width = 0.035f * screen_width;
+        height = 0.1f * screen_height;
 
 
         skin = new Texture(Gdx.files.internal("people/" + type + ".png"));
@@ -49,11 +49,14 @@ class Person {
         temp_frames = TextureRegion.split(skin, skin.getWidth() / 4, skin.getHeight());
 
         System.arraycopy(temp_frames[0], 0, frames, 0, 4);
-        currentFrame = frames[0];
+
+        spriteAnimation = new Animation<TextureRegion>(0.2f, frames);
 
         stateTime = 0;
 
         speed = (float) (0.0015 * screen_height);
+
+        currentFrame = frames[0];
 
         //moveDirection = direction;
 
@@ -64,85 +67,86 @@ class Person {
 
         switch (direction) {
             case 0:
-                switch (side) {
+                switch (side){
                     case 0:
-                        x = 0.4f * screen_width;
-                        y = 0 - height;
+                        x = 0.39f * screen_width;
+                        y = screen_height + height;
                         break;
                     case 1:
                         x = 0.55f * screen_width;
-                        y = 0 - height;
+                        y = screen_height + height;
                         break;
                     default:
                         x = 0.55f * screen_width;
-                        y = 0 - height;
+                        y = screen_height + height;
                 }
                 break;
             case -90:
                 switch (side){
                     case 0:
-                        x = 0 - height;
-                        y = 0.3f * screen_height;
+                        x = screen_width + height;
+                        y = 0.33f * screen_height;
                         break;
                     case 1:
-                        x = 0 - height;
-                        y = 0.45f * screen_height;
+                        x = screen_width + height;
+                        y = 0.62f * screen_height;
                         break;
                     default:
-                        x = 0 - height;
-                        y = 0.45f * screen_height;
+                        x = screen_width + height;
+                        y = 0.62f * screen_height;
                 }
                 break;
             case -180:
-                switch (side){
+                switch (side) {
                     case 0:
-                        x = 0.4f * screen_width;
-                        y = screen_height + height;
+                        x = 0.39f * screen_width;
+                        y = 0 - height;
                         break;
                     case 1:
                         x = 0.55f * screen_width;
-                        y = screen_height + height;
+                        y = 0 - height;
                         break;
                     default:
                         x = 0.55f * screen_width;
-                        y = screen_height + height;
+                        y = 0 - height;
                 }
                 break;
             case -270:
                 switch (side){
                     case 0:
-                        x = screen_width + height;
-                        y = 0.3f * screen_height;
+                        x = 0 - height;
+                        y = 0.34f * screen_height;
                         break;
                     case 1:
-                        x = screen_width + height;
-                        y = 0.45f * screen_height;
+                        x = 0 - height;
+                        y = 0.61f * screen_height;
                         break;
                     default:
-                        x = screen_width + height;
-                        y = 0.45f * screen_height;
+                        x = 0 - height;
+                        y = 0.61f * screen_height;
                 }
                 break;
             default:
-                switch (side) {
-                    case 0:
-                        x = 0.4f * screen_width;
-                        y = 0 - height;
-                        break;
-                    case 1:
-                        x = 0.55f * screen_width;
-                        y = 0 - height;
-                        break;
-                    default:
-                        x = 0.55f * screen_width;
-                        y = 0 - height;
-                        break;
-                }
+//                switch (side){
+//                    case 0:
+//                        x = 0.4f * screen_width;
+//                        y = screen_height + height;
+//                        break;
+//                    case 1:
+//                        x = 0.55f * screen_width;
+//                        y = screen_height + height;
+//                        break;
+//                    default:
+//                        x = 0.55f * screen_width;
+//                        y = screen_height + height;
+//                }
+                break;
         }
     }
 
     void update(float delta) {
         stateTime += delta;
+        currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
     }
 
     void move(int speed) {
@@ -162,33 +166,34 @@ class Person {
 
         switch ((int) angle) {
             case 0:
-                y += speed * this.speed;
-                if (y > screen_height) {
-                    y = 0 - height;
-                    hasLeftScreen = true;
-                }
-                break;
-            case 90:
-            case -270:
-                x -= speed * this.speed;
-                if(x < 0 - height) {
-                    x = screen_width + height;
-                    hasLeftScreen = true;
-                }
-                break;
-            case 180:
-            case -180:
                 y -= speed * this.speed;
                 if(y < 0 - height) {
                     y = screen_height + height;
                     hasLeftScreen = true;
                 }
                 break;
-            case 270:
-            case -90:
+            case 90:
+            case -270:
                 x += speed * this.speed;
                 if(x > screen_width) {
                     x = 0 - height;
+                    hasLeftScreen = true;
+                }
+
+                break;
+            case 180:
+            case -180:
+                y += speed * this.speed;
+                if (y > screen_height) {
+                    y = 0 - height;
+                    hasLeftScreen = true;
+                }
+                break;
+            case 270:
+            case -90:
+                x -= speed * this.speed;
+                if(x < 0 - height) {
+                    x = screen_width + height;
                     hasLeftScreen = true;
                 }
                 break;
