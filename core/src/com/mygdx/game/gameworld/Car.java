@@ -23,25 +23,25 @@ class Car {
     float y;
 
     /*private fields*/
-    private Animation<TextureRegion> spriteAnimation;
+    protected Animation<TextureRegion> spriteAnimation;
     private boolean turning;
     private boolean turned;
-    private boolean turnSignals;
-    private float stateTime;
-    private float screen_width;
-    private float screen_height;
+    protected boolean turnSignals;
+    protected float stateTime;
+    protected float screen_width;
+    protected float screen_height;
     private float turnRightRadius;
     private float turnLeftRadius;
     private float turningDelta_x;
     private float turnPoint_x;
     private float turnPoint_y;
-    private float speed;
+    protected float speed;
     private float turningDelta_y;
     private Texture skin;
-    private TextureRegion currentFrame;
-    private TextureRegion[] frames;
-    private TextureRegion[] rightTurnSignal;
-    private TextureRegion[] leftTurnSignal;
+    protected TextureRegion currentFrame;
+    protected TextureRegion[] frames;
+    protected TextureRegion[] rightTurnSignal;
+    protected TextureRegion[] leftTurnSignal;
 
     /*constructors*/
     Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
@@ -153,7 +153,7 @@ class Car {
     }
 
     /*private methods*/
-    private void turnSignalsRight() {
+    protected void turnSignalsRight() {
         if (turnSignals) {
             turnSignals = false;
             stateTime = 0;
@@ -164,7 +164,7 @@ class Car {
         }
     }
 
-    private void turnSignalsLeft() {
+    protected void turnSignalsLeft() {
         if (turnSignals) {
             turnSignals = false;
             stateTime = 0;
@@ -248,20 +248,20 @@ class Car {
         }
     }
 
-    private void initTurnRightFrames(TextureRegion[] frames) {
+    protected void initTurnRightFrames(TextureRegion[] frames) {
         rightTurnSignal = new TextureRegion[2];
         rightTurnSignal[0] = frames[0];
         rightTurnSignal[1] = frames[2];
     }
 
-    private void initTurnLeftFrames(TextureRegion[] frames) {
+    protected void initTurnLeftFrames(TextureRegion[] frames) {
         leftTurnSignal = new TextureRegion[2];
 
         leftTurnSignal[0] = frames[0];
         leftTurnSignal[1] = frames[1];
     }
 
-    private void turnCarLeft(int turnDelta) {
+    protected void turnCarLeft(int turnDelta) {
         if ((y >= 0.421f * screen_height - turnDelta && y <= 0.421f * screen_height + turnDelta && angle == 0f)
                 || (x >= 0.45f * screen_width - turnDelta && x <= 0.45f * screen_width + turnDelta && angle == -90f)
                 || (y <= 0.445f * screen_height + turnDelta && y >= 0.445f * screen_height - turnDelta && angle == -180f)
@@ -278,7 +278,7 @@ class Car {
         }
     }
 
-    private void turnCarRight(int turnDelta) {
+    protected void turnCarRight(int turnDelta) {
         if ((y >= 0.319f * screen_height - turnDelta && y <= 0.319f * screen_height + turnDelta && angle == 0f)
                 || (x >= 0.394f * screen_width - turnDelta && x <= 0.394f * screen_width + turnDelta && angle == -90f)
                 || (y <= 0.556f * screen_height + turnDelta && y >= 0.556f * screen_height - turnDelta && angle == -180f)

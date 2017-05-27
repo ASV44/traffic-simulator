@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Timer;
 
+import static com.badlogic.gdx.math.MathUtils.atan2;
+
 /**
  * Created by the-french-cat on 25/05/17.
  */
@@ -19,25 +21,34 @@ public class Hawk {
     public float height;
     public Texture texture;
     public TextureRegion currentFrame;
+    public float angle;
+    float scale;
 
     /*private fields*/
     private Sound mSound;
     private float stateTime;
     private boolean mFlying;
+    private float mXCoeff;
+    private float mYCoeff;
 
     /*constructors*/
-    Hawk() {
+    Hawk(int skinNumber, float scale, float xCoeff, float yCoeff, int initDelay, int delay) {
+        this.scale = scale;
+        mXCoeff = xCoeff;
+        mYCoeff = yCoeff;
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
 
-        texture = new Texture(Gdx.files.internal("hawk.png"));
+        angle = atan2(mYCoeff, mXCoeff);
+        texture = new Texture(Gdx.files.internal("hawk" + skinNumber + ".png"));
+        height = texture.getHeight();
+        width = texture.getWidth();
+        currentFrame = TextureRegion.split(texture, (int) width, (int) height)[0][0];
         mSound = Gdx.audio.newSound(Gdx.files.internal("hawk.ogg"));
-        x = -50f;
-        y = -50f;
-        /*currentFrame = new TextureRegion();
-        currentFrame = TextureRegion.split(texture, texture.getWidth(), texture.getHeight())[0][0];
-        */
-        Timer.schedule(getNewHawkTask(), 5, 15);
+
+        x = -width / 2;
+        y = -height / 2 - 100;
+        Timer.schedule(getNewHawkTask(), initDelay, delay);
     }
 
     /*public methods*/
@@ -51,8 +62,8 @@ public class Hawk {
 
         Gdx.app.log("hawk", "" + x + " " + y);
         if (mFlying) {
-            x += delta * 400;
-            y += delta * 150;
+            x += delta * mXCoeff;
+            y += delta * mYCoeff;
         }
 
         if (x > Gdx.graphics.getWidth() || y > Gdx.graphics.getHeight()) {
@@ -67,8 +78,8 @@ public class Hawk {
             public void run() {
                 mFlying = true;
                 mSound.play();
-                x = -50f;
-                y = -50f;
+                x = -width;
+                y = -height;
             }
         };
     }
