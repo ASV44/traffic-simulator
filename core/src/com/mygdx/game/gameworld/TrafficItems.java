@@ -3,6 +3,7 @@ package com.mygdx.game.gameworld;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -12,123 +13,139 @@ import java.util.Queue;
  */
 
 public class TrafficItems {
-    static Queue<Car> mCarIntersection;
-    static Queue<Car> mNorthCarQueue;
-    static Queue<Car> mEastCarQueue;
-    static Queue<Car> mSouthCarQueue;
-    static Queue<Car> mWestCarQueue;
-    static TrafficLight[] trafficLights;
+
+    /*public and package-private fields*/
+    static Queue<Car> CarIntersection;
+    static Queue<Car> NorthCarQueue;
+    static Queue<Car> EastCarQueue;
+    static Queue<Car> SouthCarQueue;
+    static Queue<Car> WestCarQueue;
+    static TrafficLight[] TrafficLights;
+    static List<Car> FreeCarsQueue;
+
+    /*private fields*/
     private Texture mCrossroad;
     private CarFactory mCarFactory;
     private Car mCar;
+    private Hawk mHawk;
 
+    /*constructors*/
     public TrafficItems() {
         mCrossroad = new Texture(Gdx.files.internal("crossroad2.png"));
-        trafficLights = new TrafficLight[4];
+        mHawk = new Hawk();
+        TrafficLights = new TrafficLight[4];
         for (int i = 0; i < 4; i++) {
-            trafficLights[i] = new TrafficLight(i);
+            TrafficLights[i] = new TrafficLight(i);
         }
-        trafficLights[0].red();
-        trafficLights[2].red();
-        trafficLights[1].red();
-        trafficLights[3].red();
+        TrafficLights[0].red();
+        TrafficLights[2].red();
+        TrafficLights[1].green();
+        TrafficLights[3].green();
+
 
         mCarFactory = new CarFactory();
-        mNorthCarQueue = new LinkedList<Car>();
-        mSouthCarQueue = new LinkedList<Car>();
-        mEastCarQueue = new LinkedList<Car>();
-        mWestCarQueue = new LinkedList<Car>();
+        NorthCarQueue = new LinkedList<Car>();
+        SouthCarQueue = new LinkedList<Car>();
+        EastCarQueue = new LinkedList<Car>();
+        WestCarQueue = new LinkedList<Car>();
+        FreeCarsQueue = new ArrayList<Car>();
 
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
-        mNorthCarQueue.add(mCar);
+        NorthCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
-        mSouthCarQueue.add(mCar);
-
-
+        SouthCarQueue.add(mCar);
     }
 
+    /*public methods*/
     public void update(float delta) {
-        for (TrafficLight trafficLight : trafficLights) {
-            trafficLight.update(delta);
-        }
-        moveCars(mNorthCarQueue, delta);
-        moveCars(mSouthCarQueue, delta);
-        moveCars(mWestCarQueue, delta);
-        moveCars(mEastCarQueue, delta);
+        updateTrafficLights(delta);
+        mHawk.update(delta);
+        moveCars(NorthCarQueue, delta);
+        moveCars(SouthCarQueue, delta);
+        moveCars(WestCarQueue, delta);
+        moveCars(EastCarQueue, delta);
+        moveCars(FreeCarsQueue, delta);
         removeHiddenCars();
     }
 
+    public void dispose() {
+        mCrossroad.dispose();
+        mHawk.dispose();
+    }
+
+    public Texture getCrossroad() {
+        return this.mCrossroad;
+    }
+
+    public List<Car> getCars() {
+        List<Car> tmp = new LinkedList<Car>();
+        tmp.addAll(NorthCarQueue);
+        tmp.addAll(SouthCarQueue);
+        tmp.addAll(EastCarQueue);
+        tmp.addAll(WestCarQueue);
+        tmp.addAll(FreeCarsQueue);
+        return tmp;
+    }
+
+    public TrafficLight[] getTrafficLights() {
+        return this.TrafficLights;
+    }
+
+    public Hawk getHawk() {
+        return this.mHawk;
+    }
+
+    /*private methods*/
+    private void updateTrafficLights(float delta) {
+        for (TrafficLight trafficLight : TrafficLights) {
+            trafficLight.update(delta);
+        }
+    }
+
     private void removeHiddenCars() {
-        if (!mNorthCarQueue.isEmpty() && mNorthCarQueue.element().hasLeftScreen) {
-            mNorthCarQueue.remove();
+        if (!NorthCarQueue.isEmpty() && NorthCarQueue.element().hasLeftScreen) {
+            NorthCarQueue.remove();
             mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
-            mNorthCarQueue.add(mCar);
+            NorthCarQueue.add(mCar);
         }
 
-        if (!mSouthCarQueue.isEmpty() && mSouthCarQueue.element().hasLeftScreen) {
-            mSouthCarQueue.remove();
+        if (!SouthCarQueue.isEmpty() && SouthCarQueue.element().hasLeftScreen) {
+            SouthCarQueue.remove();
             mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
-            mSouthCarQueue.add(mCar);
+            SouthCarQueue.add(mCar);
         }
 
-        if (!mEastCarQueue.isEmpty() && mEastCarQueue.element().hasLeftScreen) {
-            mEastCarQueue.remove();
+        if (!EastCarQueue.isEmpty() && EastCarQueue.element().hasLeftScreen) {
+            EastCarQueue.remove();
             mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
-            mEastCarQueue.add(mCar);
+            EastCarQueue.add(mCar);
         }
 
-        if (!mWestCarQueue.isEmpty() && mWestCarQueue.element().hasLeftScreen) {
-            mWestCarQueue.remove();
+        if (!WestCarQueue.isEmpty() && WestCarQueue.element().hasLeftScreen) {
+            WestCarQueue.remove();
             mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
-            mWestCarQueue.add(mCar);
+            WestCarQueue.add(mCar);
         }
 
     }
 
     private void moveCars(Queue<Car> cars, float delta) {
-        for (Car car : cars) {
-            if (!car.hasLeftScreen) {
-                car.update(delta);
-                if (car.canMove) {
-                    car.move(1);
-                } else {
-                    car.stop();
-                }
+        for (Car car : cars) updateCarPosition(car, delta);
+    }
+
+    private void updateCarPosition(Car car, float delta) {
+        if (!car.hasLeftScreen) {
+            car.update(delta);
+            if (car.canMove) {
+                car.move(1);
+            } else {
+                car.stop();
             }
         }
     }
 
-    private void movePersons(Queue<Person> persons, float delta) {
-        for (Person person : persons) {
-            if (!person.hasLeftScreen) {
-                person.update(delta);
-//                if (car.canMove) {
-                person.move(1);
-//                } else {
-//                    car.stop();
-//                }
-            }
-        }
+    private void moveCars(List<Car> cars, float delta) {
+        for (Car car : cars) updateCarPosition(car, delta);
     }
 
-    public void dispose() {
-        mCrossroad.dispose();
-    }
-
-    Texture getCrossroad() {
-        return this.mCrossroad;
-    }
-
-    List<Car> getCars() {
-        List<Car> tmp = new LinkedList<Car>();
-        tmp.addAll(mNorthCarQueue);
-        tmp.addAll(mSouthCarQueue);
-        tmp.addAll(mEastCarQueue);
-        tmp.addAll(mWestCarQueue);
-        return tmp;
-    }
-
-    public TrafficLight[] getTrafficLights() {
-        return this.trafficLights;
-    }
 }
