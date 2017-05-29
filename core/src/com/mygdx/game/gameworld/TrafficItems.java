@@ -22,12 +22,14 @@ public class TrafficItems {
     static Queue<Car> WestCarQueue;
     static TrafficLight[] TrafficLights;
     static List<Car> FreeCarsQueue;
-    static List<Person> PersonList;
+
 
     /*private fields*/
     private Texture mCrossroad;
     private CarFactory mCarFactory;
     private Car mCar;
+
+    static List<Person> PersonList;
     private PersonFactory mPersonFactory;
     private Person mPerson;
 
@@ -60,8 +62,12 @@ public class TrafficItems {
         WestCarQueue = new LinkedList<Car>();
         FreeCarsQueue = new ArrayList<Car>();
 
+        mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
+        WestCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
         NorthCarQueue.add(mCar);
+        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
+        EastCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
         SouthCarQueue.add(mCar);
 
@@ -69,11 +75,9 @@ public class TrafficItems {
         mPersonFactory = new PersonFactory();
         PersonList = new ArrayList<Person>();
 
-        mPerson = mPersonFactory.newPerson(PersonTypes.Person1);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person1, -180);
         PersonList.add(mPerson);
-        mPerson = mPersonFactory.newPerson(PersonTypes.Person2);
-        PersonList.add(mPerson);
-        mPerson = mPersonFactory.newPerson(PersonTypes.Person3);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person2,-270);
         PersonList.add(mPerson);
 
         policeCar = new PoliceCar(0,CarMoveDirection.MoveForward);
@@ -104,8 +108,7 @@ public class TrafficItems {
 
     public void dispose() {
         mCrossroad.dispose();
-        for (Hawk hawk : mHawks
-                ) {
+        for (Hawk hawk : mHawks) {
             hawk.dispose();
         }
     }
@@ -160,13 +163,13 @@ public class TrafficItems {
 
         if (!EastCarQueue.isEmpty() && EastCarQueue.element().hasLeftScreen) {
             EastCarQueue.remove();
-            mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
+            mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
             EastCarQueue.add(mCar);
         }
 
         if (!WestCarQueue.isEmpty() && WestCarQueue.element().hasLeftScreen) {
             WestCarQueue.remove();
-            mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
+            mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
             WestCarQueue.add(mCar);
         }
 
@@ -224,11 +227,5 @@ public class TrafficItems {
                 Gdx.app.log("afterAdding", "" +PersonList.get(j).getCurrentFrame());
             }
         }
-
-//        if (!PersonQueue.isEmpty() && PersonQueue.element().hasLeftScreen) {
-//            PersonQueue.remove();
-//            mPerson = mPersonFactory.newPerson(PersonTypes.Person1);
-//            PersonQueue.add(mPerson);
-//        }
     }
 }

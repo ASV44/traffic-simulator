@@ -10,16 +10,24 @@ import java.util.Random;
 
 class PersonFactory {
     private Random mRandGen;
+    private float initAngle;
+
     PersonFactory() { mRandGen = new Random(); }
 
     Person newPerson(PersonTypes personType) {
-        float initAngle = getInitAngle();
+        initAngle = calcInitAngle();
         int initSide = mRandGen.nextInt(2);
 
         return new Person(personType.type, initAngle, initSide);
     }
 
-    private float getInitAngle() {
+    Person newPerson(PersonTypes personType, float initAngle) {
+        int initSide = mRandGen.nextInt(2);
+
+        return new Person(personType.type, initAngle, initSide);
+    }
+
+    private float calcInitAngle() {
         float angle = 0;
         int rand = mRandGen.nextInt(4);
         Gdx.app.log("Rand ", "" + rand);
@@ -38,5 +46,9 @@ class PersonFactory {
                 break;
         }
         return angle;
+    }
+
+    public float getInitAngle() {
+        return initAngle;
     }
 }

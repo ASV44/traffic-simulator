@@ -8,6 +8,6 @@ public enum TrafficLightState {
     Green,
     Yellow,
     Red,
-    FlashignGreen,
+    FlashingGreen,
     FlashingYellow
 }

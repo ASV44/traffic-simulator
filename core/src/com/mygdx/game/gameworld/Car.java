@@ -42,7 +42,6 @@ class Car {
     protected TextureRegion[] frames;
     protected TextureRegion[] rightTurnSignal;
     protected TextureRegion[] leftTurnSignal;
-
     /*constructors*/
     Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
         turnPoint_y = 0;
@@ -190,9 +189,9 @@ class Car {
         } else if (!TrafficItems.SouthCarQueue.isEmpty()
                 && TrafficItems.SouthCarQueue.element().hashCode() == this.hashCode()) {
             if ((TrafficItems.TrafficLights[0].state == TrafficLightState.Red ||
-                    TrafficItems.TrafficLights[2].state == TrafficLightState.Yellow)
-                    && x < TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 40
-                    && x > TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 30) {
+                    TrafficItems.TrafficLights[0].state == TrafficLightState.Yellow)
+                    && x < TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 20
+                    && x > TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 10) {
                 canMove = false;
             } else {
                 canMove = true;
@@ -200,20 +199,19 @@ class Car {
         } else if (!TrafficItems.WestCarQueue.isEmpty()
                 && TrafficItems.WestCarQueue.element().hashCode() == this.hashCode()) {
             if ((TrafficItems.TrafficLights[1].state == TrafficLightState.Red ||
-                    TrafficItems.TrafficLights[2].state == TrafficLightState.Yellow)
-                    && x > TrafficItems.TrafficLights[1].y + TrafficItems.TrafficLights[1].height + 40
-                    && x < TrafficItems.TrafficLights[1].y + TrafficItems.TrafficLights[1].height + 30) {
+                    TrafficItems.TrafficLights[1].state == TrafficLightState.Yellow)
+                    && y < TrafficItems.TrafficLights[1].y - TrafficItems.TrafficLights[1].width - 40
+                    && y > TrafficItems.TrafficLights[1].y - TrafficItems.TrafficLights[1].width - 50) {
                 canMove = false;
             } else {
                 canMove = true;
             }
-        } else {
-            if (!TrafficItems.EastCarQueue.isEmpty()
-                    && TrafficItems.EastCarQueue.element().hashCode() == this.hashCode()
-                    && (TrafficItems.TrafficLights[2].state == TrafficLightState.Red ||
-                    TrafficItems.TrafficLights[2].state == TrafficLightState.Yellow)
-                    && x > TrafficItems.TrafficLights[2].y - TrafficItems.TrafficLights[2].height - 40
-                    && x < TrafficItems.TrafficLights[2].y - TrafficItems.TrafficLights[2].height - 30) {
+        } else if (!TrafficItems.EastCarQueue.isEmpty()
+                && TrafficItems.EastCarQueue.element().hashCode() == this.hashCode()) {
+            if((TrafficItems.TrafficLights[3].state == TrafficLightState.Red ||
+                    TrafficItems.TrafficLights[3].state == TrafficLightState.Yellow)
+                    && y > TrafficItems.TrafficLights[3].y + TrafficItems.TrafficLights[3].width - 20
+                    && y < TrafficItems.TrafficLights[3].y + TrafficItems.TrafficLights[3].width - 10) {
                 canMove = false;
             } else {
                 canMove = true;

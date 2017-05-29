@@ -76,7 +76,7 @@ class TrafficLight {
 
     void flashingGreen() {
         spriteAnimation = new Animation<TextureRegion>(0.5f, flashingGreenFrames);
-        setLight(TrafficLightState.FlashignGreen, 2f);
+        setLight(TrafficLightState.FlashingGreen, 2f);
     }
 
     void flashingYellow() {
@@ -86,7 +86,7 @@ class TrafficLight {
 
     void update(float delta) {
         stateTime += delta;
-        if (state == TrafficLightState.FlashignGreen || state == TrafficLightState.FlashingYellow) {
+        if (state == TrafficLightState.FlashingGreen || state == TrafficLightState.FlashingYellow) {
             currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
         }
         frameStateTime -= delta;
@@ -101,7 +101,7 @@ class TrafficLight {
                     flashingGreen();
                     break;
                 case Yellow:
-                    if (prevState == TrafficLightState.FlashignGreen) {
+                    if (prevState == TrafficLightState.FlashingGreen) {
                         red();
                     } else {
                         green();
@@ -112,7 +112,7 @@ class TrafficLight {
                     break;
                 case FlashingYellow:
                     break;
-                case FlashignGreen:
+                case FlashingGreen:
                     yellow();
                     break;
             }

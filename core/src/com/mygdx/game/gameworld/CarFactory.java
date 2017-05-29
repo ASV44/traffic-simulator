@@ -14,6 +14,7 @@ class CarFactory {
 
     /*private fields*/
     private Random mRandGen;
+    private float initAngle;
 
     /*constructors*/
     CarFactory() {
@@ -22,16 +23,16 @@ class CarFactory {
 
     /*public and package-private methods*/
     Car newCar(CarTypes carType) {
-        float initAngle = getInitAngle();
+        this.initAngle = calcInitAngle();
         CarMoveDirection carMoveDirection = getMoveDirection();
 
-        return new Car(carType.type, carType.numSprites, initAngle, carMoveDirection);
+        return new Car(carType.type, carType.numSprites, this.initAngle, carMoveDirection);
     }
 
     Car newCar(CarTypes carType, float initAngle) {
         CarMoveDirection carMoveDirection = getMoveDirection();
-
-        return new Car(carType.type, carType.numSprites, initAngle, carMoveDirection);
+        this.initAngle = initAngle;
+        return new Car(carType.type, carType.numSprites, this.initAngle, carMoveDirection);
     }
 
     /*private methods*/
@@ -40,7 +41,7 @@ class CarFactory {
         return (CarMoveDirection.values())[random];
     }
 
-    private float getInitAngle() {
+    private float calcInitAngle() {
         float angle = 0;
         int rand = mRandGen.nextInt(4);
         Gdx.app.log("Rand ", "" + rand);
