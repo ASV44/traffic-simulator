@@ -191,6 +191,17 @@ class Car {
                 canMove = false;
             } else {
                 canMove = true;
+                if(!TrafficItems.SouthCarQueue.isEmpty()) {
+                    if (TrafficItems.SouthCarQueue.element().getInIntersection()
+                            && this.inIntersection
+                            && this.moveDirection == CarMoveDirection.TurnLeft
+                            && (TrafficItems.SouthCarQueue.element().moveDirection == CarMoveDirection.MoveForward
+                            || TrafficItems.SouthCarQueue.element().moveDirection == CarMoveDirection.TurnRight)
+                            && x > TrafficItems.TrafficLights[2].x - TrafficItems.TrafficLights[2].width + 200)
+                    {
+                        canMove = false;
+                    }
+                }
             }
         } else if (!TrafficItems.SouthCarQueue.isEmpty()
                 && TrafficItems.SouthCarQueue.element().hashCode() == this.hashCode()) {
@@ -201,7 +212,21 @@ class Car {
                 canMove = false;
             } else {
                 canMove = true;
+                if(!TrafficItems.NorthCarQueue.isEmpty()) {
+                    if (TrafficItems.NorthCarQueue.element().getInIntersection()
+                            && this.inIntersection
+                            && this.moveDirection == CarMoveDirection.TurnLeft
+                            && (TrafficItems.NorthCarQueue.element().moveDirection == CarMoveDirection.MoveForward
+                            || TrafficItems.NorthCarQueue.element().moveDirection == CarMoveDirection.TurnRight
+                            || TrafficItems.NorthCarQueue.element().moveDirection == CarMoveDirection.TurnLeft)
+                            //&& x < TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width - 200
+                            )
+                    {
+                        canMove = false;
+                    }
+                }
             }
+
         } else if (!TrafficItems.WestCarQueue.isEmpty()
                 && TrafficItems.WestCarQueue.element().hashCode() == this.hashCode()) {
             if ((TrafficItems.TrafficLights[1].state == TrafficLightState.Red ||
@@ -211,6 +236,17 @@ class Car {
                 canMove = false;
             } else {
                 canMove = true;
+                if(!TrafficItems.EastCarQueue.isEmpty()) {
+                    if (TrafficItems.EastCarQueue.element().getInIntersection()
+                            && this.inIntersection
+                            && this.moveDirection == CarMoveDirection.TurnLeft
+                            && (TrafficItems.EastCarQueue.element().moveDirection == CarMoveDirection.MoveForward
+                            || TrafficItems.EastCarQueue.element().moveDirection == CarMoveDirection.TurnRight)
+                            && y > TrafficItems.TrafficLights[1].y - TrafficItems.TrafficLights[1].width - 40)
+                    {
+                        canMove = false;
+                    }
+                }
             }
         } else if (!TrafficItems.EastCarQueue.isEmpty()
                 && TrafficItems.EastCarQueue.element().hashCode() == this.hashCode()) {
@@ -221,6 +257,19 @@ class Car {
                 canMove = false;
             } else {
                 canMove = true;
+                if(!TrafficItems.WestCarQueue.isEmpty()) {
+                    if (TrafficItems.WestCarQueue.element().getInIntersection()
+                            && this.inIntersection
+                            && this.moveDirection == CarMoveDirection.TurnLeft
+                            && (TrafficItems.WestCarQueue.element().moveDirection == CarMoveDirection.MoveForward
+                            || TrafficItems.WestCarQueue.element().moveDirection == CarMoveDirection.TurnRight
+                            || TrafficItems.WestCarQueue.element().moveDirection == CarMoveDirection.TurnLeft)
+                            //&& x < TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width - 200
+                            )
+                    {
+                        canMove = false;
+                    }
+                }
             }
         }
         return canMove;

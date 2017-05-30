@@ -5,8 +5,10 @@ package com.mygdx.game.gameworld;
  */
 
 enum CarTypes {
+    PoliceCar(0, 8, 2),
     SimpleCar(1, 4, 1),
-    PoliceCar(2, 8, 2);
+    Bus(2, 4, 1);
+
 
     public int type;
     public int numSprites;

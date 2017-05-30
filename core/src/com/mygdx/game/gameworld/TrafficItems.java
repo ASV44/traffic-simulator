@@ -79,9 +79,9 @@ public class TrafficItems {
         PersonList.add(mPerson);
         mPerson = mPersonFactory.newPerson(PersonTypes.Person2,-270);
         PersonList.add(mPerson);
-        mPerson = mPersonFactory.newPerson(PersonTypes.Person1, 0);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person3, 0);
         PersonList.add(mPerson);
-        mPerson = mPersonFactory.newPerson(PersonTypes.Person2,-90);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person4,-90);
         PersonList.add(mPerson);
 
         //policeCar = new PoliceCar(0,CarMoveDirection.MoveForward);
