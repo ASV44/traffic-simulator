@@ -62,14 +62,14 @@ public class TrafficItems {
         WestCarQueue = new LinkedList<Car>();
         FreeCarsQueue = new ArrayList<Car>();
 
-//        mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
-//        WestCarQueue.add(mCar);
-        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
-        NorthCarQueue.add(mCar);
-//        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
-//        EastCarQueue.add(mCar);
-        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
-        SouthCarQueue.add(mCar);
+        mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
+        WestCarQueue.add(mCar);
+//        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
+//        NorthCarQueue.add(mCar);
+        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
+        EastCarQueue.add(mCar);
+//        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
+//        SouthCarQueue.add(mCar);
 
 
         mPersonFactory = new PersonFactory();
@@ -84,7 +84,7 @@ public class TrafficItems {
         mPerson = mPersonFactory.newPerson(PersonTypes.Person2,-90);
         PersonList.add(mPerson);
 
-        policeCar = new PoliceCar(0,CarMoveDirection.MoveForward);
+        //policeCar = new PoliceCar(0,CarMoveDirection.MoveForward);
 
     }
 
@@ -102,8 +102,8 @@ public class TrafficItems {
         movePersons(delta);
         removeHiddenPersons();
 
-        policeCar.update(delta);
-        policeCar.move(1);
+        //policeCar.update(delta);
+        //policeCar.move(1);
     }
 
     private void updateHawks(float delta) {
@@ -184,7 +184,11 @@ public class TrafficItems {
     }
 
     private void updateCarPosition(Car car, float delta) {
-
+        if (car.getInIntersection()) {
+            Gdx.app.log("inIntersection: ", "true");
+        } else {
+            Gdx.app.log("inIntersection: ", "false");
+        }
         if (!car.hasLeftScreen) {
             car.update(delta);
             if (car.canMove) {

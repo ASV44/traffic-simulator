@@ -43,9 +43,9 @@ public class TrafficRenderer {
                     cars.get(i).height, 1, 1, cars.get(i).angle);
         }
 
-        batch.draw(items.policeCar.getCurrentFrame(), items.policeCar.x, items.policeCar.y,
-                items.policeCar.width / 2, items.policeCar.height / 2, items.policeCar.width,
-                items.policeCar.height, 1, 1, items.policeCar.angle);
+//        batch.draw(items.policeCar.getCurrentFrame(), items.policeCar.x, items.policeCar.y,
+//                items.policeCar.width / 2, items.policeCar.height / 2, items.policeCar.width,
+//                items.policeCar.height, 1, 1, items.policeCar.angle);
 
         for (int i = 0; i < persons.size(); i++) {
             Gdx.app.log("PersonToRender", ""+persons.get(i).getCurrentFrame());

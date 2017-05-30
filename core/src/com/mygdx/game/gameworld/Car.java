@@ -46,6 +46,7 @@ class Car {
     /*constructors*/
     Car(int type, int frameNumber, float angle, CarMoveDirection moveDir) {
         turnPoint_y = 0;
+        inIntersection = false;
         turnPoint_x = 0.102f * screen_width;
         canMove = true;
         turned = false;
@@ -90,6 +91,7 @@ class Car {
             currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
         }
         canMove();
+        checkInIntersection();
     }
 
     boolean getInIntersection() {
@@ -224,6 +226,54 @@ class Car {
         return canMove;
     }
 
+    private void checkInIntersection(){
+        if (!TrafficItems.NorthCarQueue.isEmpty()
+                && TrafficItems.NorthCarQueue.element().hashCode() == this.hashCode()) {
+            if ((x > TrafficItems.TrafficLights[2].x - TrafficItems.TrafficLights[2].width - 30)
+                    &&((moveDirection == CarMoveDirection.MoveForward &&  x < TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 10 - height)
+                    || (moveDirection == CarMoveDirection.TurnLeft && y < TrafficItems.TrafficLights[3].y + TrafficItems.TrafficLights[3].width - 20 - height)
+                    || (moveDirection == CarMoveDirection.TurnRight && y > TrafficItems.TrafficLights[1].y - TrafficItems.TrafficLights[1].width - 40 + height)))
+            {
+                inIntersection = true;
+            } else {
+                inIntersection = false;
+            }
+        } else if (!TrafficItems.SouthCarQueue.isEmpty()
+                && TrafficItems.SouthCarQueue.element().hashCode() == this.hashCode()) {
+            if ((x < TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 10)
+                    &&((moveDirection == CarMoveDirection.MoveForward && x > TrafficItems.TrafficLights[2].x - TrafficItems.TrafficLights[2].width - 30 + height)
+                    || (moveDirection == CarMoveDirection.TurnLeft &&  y > TrafficItems.TrafficLights[1].y - TrafficItems.TrafficLights[1].width - 40 + height)
+                    || (moveDirection == CarMoveDirection.TurnRight && y < TrafficItems.TrafficLights[3].y + TrafficItems.TrafficLights[3].width - 20 - height)))
+            {
+                inIntersection = true;
+            } else {
+                inIntersection = false;
+            }
+        } else if (!TrafficItems.WestCarQueue.isEmpty()
+                && TrafficItems.WestCarQueue.element().hashCode() == this.hashCode()) {
+            if ((y > TrafficItems.TrafficLights[1].y - TrafficItems.TrafficLights[1].width - 40)
+                    &&((moveDirection == CarMoveDirection.MoveForward && y < TrafficItems.TrafficLights[3].y + TrafficItems.TrafficLights[3].width - 20 - height)
+                    || (moveDirection == CarMoveDirection.TurnLeft && x > TrafficItems.TrafficLights[2].x - TrafficItems.TrafficLights[2].width - 30 + height)
+                    || (moveDirection == CarMoveDirection.TurnRight && x < TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 10 - height)))
+            {
+                inIntersection = true;
+            } else {
+                inIntersection = false;
+            }
+        } else if (!TrafficItems.EastCarQueue.isEmpty()
+                && TrafficItems.EastCarQueue.element().hashCode() == this.hashCode()) {
+            if((y < TrafficItems.TrafficLights[3].y + TrafficItems.TrafficLights[3].width - 20)
+                    &&((moveDirection == CarMoveDirection.MoveForward && y > TrafficItems.TrafficLights[1].y - TrafficItems.TrafficLights[1].width - 40 + height)
+                    || (moveDirection == CarMoveDirection.TurnLeft && x < TrafficItems.TrafficLights[0].x + TrafficItems.TrafficLights[0].width + 10 - height)
+                    || (moveDirection == CarMoveDirection.TurnRight && x > TrafficItems.TrafficLights[2].x - TrafficItems.TrafficLights[2].width - 30 + height)))
+            {
+                inIntersection = true;
+            } else {
+                inIntersection = false;
+            }
+        }
+    }
+
     private void initPosition(float angle) {
         int direction = (int) angle;
 
@@ -294,8 +344,6 @@ class Car {
                 turnSignalsRight();
             }
             turnRight();
-            inIntersection = true;
-
         }
     }
 
