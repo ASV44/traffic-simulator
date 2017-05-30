@@ -44,8 +44,8 @@ public class TrafficItems {
         mCrossroad = new Texture(Gdx.files.internal("crossroad2.png"));
         mHawkFactory = new HawkFactory();
         mHawks = new ArrayList<Hawk>();
-        mHawks.add(mHawkFactory.newHawk(HawkTypes.RedHawk, 3, 11));
-        mHawks.add(mHawkFactory.newHawk(HawkTypes.BigBlackHawk, 5, 6));
+        mHawks.add(mHawkFactory.newHawk(HawkTypes.RedHawk, 3, 40));
+        mHawks.add(mHawkFactory.newHawk(HawkTypes.BigBlackHawk, 5, 50));
         TrafficLights = new TrafficLight[4];
         for (int i = 0; i < 4; i++) {
             TrafficLights[i] = new TrafficLight(i);
@@ -62,12 +62,12 @@ public class TrafficItems {
         WestCarQueue = new LinkedList<Car>();
         FreeCarsQueue = new ArrayList<Car>();
 
-        mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
-        WestCarQueue.add(mCar);
+//        mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
+//        WestCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
         NorthCarQueue.add(mCar);
-        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
-        EastCarQueue.add(mCar);
+//        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
+//        EastCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
         SouthCarQueue.add(mCar);
 
@@ -78,6 +78,10 @@ public class TrafficItems {
         mPerson = mPersonFactory.newPerson(PersonTypes.Person1, -180);
         PersonList.add(mPerson);
         mPerson = mPersonFactory.newPerson(PersonTypes.Person2,-270);
+        PersonList.add(mPerson);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person1, 0);
+        PersonList.add(mPerson);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person2,-90);
         PersonList.add(mPerson);
 
         policeCar = new PoliceCar(0,CarMoveDirection.MoveForward);
@@ -180,6 +184,7 @@ public class TrafficItems {
     }
 
     private void updateCarPosition(Car car, float delta) {
+
         if (!car.hasLeftScreen) {
             car.update(delta);
             if (car.canMove) {
@@ -198,11 +203,11 @@ public class TrafficItems {
         for (Person person : PersonList) {
             if (!person.hasLeftScreen) {
                 person.update(delta);
-//                if (car.canMove) {
-                person.move(1);
-//                } else {
-//                    car.stop();
-//                }
+                if (person.canMove) {
+                    person.move(1);
+                } else {
+                    person.stop();
+                }
             }
         }
     }

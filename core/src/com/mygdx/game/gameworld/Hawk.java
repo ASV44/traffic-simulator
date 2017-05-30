@@ -47,7 +47,7 @@ public class Hawk {
         mSound = Gdx.audio.newSound(Gdx.files.internal("hawk.ogg"));
 
         x = -width / 2;
-        y = -height / 2 - 100;
+        y = -height / 2 - 450;
         Timer.schedule(getNewHawkTask(), initDelay, delay);
     }
 

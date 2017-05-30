@@ -18,6 +18,7 @@ class Person {
     int side;
     //int moveDirection;
 
+    boolean canMove;
     boolean hasLeftScreen;
     boolean hasAppearedOnScreen;
 
@@ -32,6 +33,7 @@ class Person {
     private float screen_height;
 
     Person(int type, float angle, int side) {
+        canMove = true;
         hasLeftScreen = false;
         hasAppearedOnScreen = true;
         screen_width = Gdx.graphics.getWidth();
@@ -147,6 +149,7 @@ class Person {
     void update(float delta) {
         stateTime += delta;
         currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
+        canMove();
     }
 
     void move(int speed) {
@@ -199,6 +202,59 @@ class Person {
                 break;
         }
     }
+
+    void stop() {
+        currentFrame = frames[0];
+    }
+
+    private boolean canMove() {
+        Gdx.app.log("angle","" + angle);
+        switch ((int)angle) {
+            case 0:
+                if((TrafficItems.TrafficLights[3].state == TrafficLightState.Red ||
+                        TrafficItems.TrafficLights[3].state == TrafficLightState.Yellow)
+                        && y > TrafficItems.TrafficLights[3].y + TrafficItems.TrafficLights[3].width - 110
+                        && y < TrafficItems.TrafficLights[3].y + TrafficItems.TrafficLights[3].width - 100) {
+                    canMove = false;
+                } else {
+                    canMove = true;
+                }
+                break;
+            case -90:
+                if ((TrafficItems.TrafficLights[0].state == TrafficLightState.Red ||
+                        TrafficItems.TrafficLights[0].state == TrafficLightState.Yellow)
+                        && x < TrafficItems.TrafficLights[0].x - TrafficItems.TrafficLights[0].width + 20
+                        && x > TrafficItems.TrafficLights[0].x - TrafficItems.TrafficLights[0].width + 10) {
+                    canMove = false;
+                } else {
+                    canMove = true;
+                }
+                break;
+            case -180:
+                if ((TrafficItems.TrafficLights[1].state == TrafficLightState.Red ||
+                        TrafficItems.TrafficLights[1].state == TrafficLightState.Yellow)
+                        && y < TrafficItems.TrafficLights[1].y - TrafficItems.TrafficLights[1].width + 130
+                        && y > TrafficItems.TrafficLights[1].y - TrafficItems.TrafficLights[1].width + 120) {
+                    canMove = false;
+                } else {
+                    canMove = true;
+                }
+                break;
+            case -270:
+                if ((TrafficItems.TrafficLights[2].state == TrafficLightState.Red ||
+                    TrafficItems.TrafficLights[2].state == TrafficLightState.Yellow)
+                    && x > TrafficItems.TrafficLights[2].x - TrafficItems.TrafficLights[2].width + 100
+                    && x < TrafficItems.TrafficLights[2].x - TrafficItems.TrafficLights[2].width + 110)
+                {
+                    canMove = false;
+                } else {
+                    canMove = true;
+                }
+                break;
+        }
+        return canMove;
+    }
+
 
     TextureRegion getCurrentFrame() {
         return this.currentFrame;

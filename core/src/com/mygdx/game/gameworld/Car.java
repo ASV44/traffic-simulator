@@ -26,6 +26,7 @@ class Car {
     protected Animation<TextureRegion> spriteAnimation;
     private boolean turning;
     private boolean turned;
+    private boolean inIntersection;
     protected boolean turnSignals;
     protected float stateTime;
     protected float screen_width;
@@ -89,6 +90,10 @@ class Car {
             currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
         }
         canMove();
+    }
+
+    boolean getInIntersection() {
+        return inIntersection;
     }
 
     void move(int speed) {
@@ -175,7 +180,6 @@ class Car {
     }
 
     private boolean canMove() {
-
         if (!TrafficItems.NorthCarQueue.isEmpty()
                 && TrafficItems.NorthCarQueue.element().hashCode() == this.hashCode()) {
             if ((TrafficItems.TrafficLights[2].state == TrafficLightState.Red ||
@@ -290,6 +294,7 @@ class Car {
                 turnSignalsRight();
             }
             turnRight();
+            inIntersection = true;
 
         }
     }
