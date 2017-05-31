@@ -2,11 +2,13 @@ package com.mygdx.game.gameworld;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 
 /**
  * Created by hackintosh on 5/16/17.
@@ -29,6 +31,10 @@ public class TrafficItems {
     private CarFactory mCarFactory;
     private Car mCar;
 
+    static List<Person> NorthPersonList;
+    static List<Person> EastPersonList;
+    static List<Person> SouthPersonList;
+    static List<Person> WestPersonList;
     static List<Person> PersonList;
     private PersonFactory mPersonFactory;
     private Person mPerson;
@@ -64,25 +70,28 @@ public class TrafficItems {
 
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
         WestCarQueue.add(mCar);
-//        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
-//        NorthCarQueue.add(mCar);
+        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
+        NorthCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
         EastCarQueue.add(mCar);
-//        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
-//        SouthCarQueue.add(mCar);
+        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
+        SouthCarQueue.add(mCar);
 
 
         mPersonFactory = new PersonFactory();
-        PersonList = new ArrayList<Person>();
+        NorthPersonList = new ArrayList<Person>();
+        EastPersonList = new ArrayList<Person>();
+        SouthPersonList = new ArrayList<Person>();
+        WestPersonList = new ArrayList<Person>();
 
-        mPerson = mPersonFactory.newPerson(PersonTypes.Person1, -180);
-        PersonList.add(mPerson);
-        mPerson = mPersonFactory.newPerson(PersonTypes.Person2,-270);
-        PersonList.add(mPerson);
-        mPerson = mPersonFactory.newPerson(PersonTypes.Person3, 0);
-        PersonList.add(mPerson);
-        mPerson = mPersonFactory.newPerson(PersonTypes.Person4,-90);
-        PersonList.add(mPerson);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person1, 0);
+        EastPersonList.add(mPerson);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person2,-90);
+        SouthPersonList.add(mPerson);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person3, -180);
+        WestPersonList.add(mPerson);
+        mPerson = mPersonFactory.newPerson(PersonTypes.Person4,-270);
+        NorthPersonList.add(mPerson);
 
         //policeCar = new PoliceCar(0,CarMoveDirection.MoveForward);
 
@@ -99,8 +108,14 @@ public class TrafficItems {
         moveCars(FreeCarsQueue, delta);
         removeHiddenCars();
 
-        movePersons(delta);
-        removeHiddenPersons();
+        movePersons(NorthPersonList, delta);
+        movePersons(EastPersonList, delta);
+        movePersons(SouthPersonList, delta);
+        movePersons(WestPersonList, delta);
+        removeHiddenPersons(NorthPersonList, -270);
+        removeHiddenPersons(EastPersonList, 0);
+        removeHiddenPersons(SouthPersonList, -90);
+        removeHiddenPersons(WestPersonList, -180);
 
         //policeCar.update(delta);
         //policeCar.move(1);
@@ -133,7 +148,10 @@ public class TrafficItems {
 
     public List<Person> getPersons() {
         List<Person> tmp = new ArrayList<Person>();
-        tmp.addAll(PersonList);
+        tmp.addAll(NorthPersonList);
+        tmp.addAll(EastPersonList);
+        tmp.addAll(SouthPersonList);
+        tmp.addAll(WestPersonList);
         return tmp;
     }
 
@@ -203,8 +221,8 @@ public class TrafficItems {
         for (Car car : cars) updateCarPosition(car, delta);
     }
 
-    private void movePersons(float delta) {
-        for (Person person : PersonList) {
+    private void movePersons(List<Person> persons,float delta) {
+        for (Person person : persons) {
             if (!person.hasLeftScreen) {
                 person.update(delta);
                 if (person.canMove) {
@@ -216,24 +234,41 @@ public class TrafficItems {
         }
     }
 
-    private void removeHiddenPersons() {
+    private void removeHiddenPersons(List<Person> persons, int angle) {
         List<Integer> indexToRemove = new ArrayList<Integer>();
-        for(int i = 0; i < PersonList.size(); i++) {
-            if(PersonList.get(i).hasLeftScreen) {
+        Random mRandGen = new Random();
+        int rand = mRandGen.nextInt(4);
+        for(int i = 0; i < persons.size(); i++) {
+            if( persons.get(i).hasLeftScreen) {
                 indexToRemove.add(i);
             }
         }
-
         for(int i: indexToRemove) {
             Gdx.app.log("indextoRemove","" + i);
-            PersonList.remove(i);
-            for(int j = 0; j < PersonList.size(); j++) {
-                Gdx.app.log("afterRemoving", "" +PersonList.get(j));
+             persons.remove(i);
+            for(int j = 0; j < persons.size(); j++) {
+                Gdx.app.log("afterRemoving", "" + persons.get(j));
             }
-            mPerson = mPersonFactory.newPerson(PersonTypes.Person1);
-            PersonList.add(mPerson);
-            for(int j = 0; j < PersonList.size(); j++) {
-                Gdx.app.log("afterAdding", "" +PersonList.get(j).getCurrentFrame());
+            switch (rand) {
+                case 0:
+                    mPerson = mPersonFactory.newPerson(PersonTypes.Person1, angle);
+                    break;
+                case 1:
+                    mPerson = mPersonFactory.newPerson(PersonTypes.Person2, angle);
+                    break;
+                case 2:
+                    mPerson = mPersonFactory.newPerson(PersonTypes.Person3, angle);
+                    break;
+                case 3:
+                    mPerson = mPersonFactory.newPerson(PersonTypes.Person4, angle);
+                    break;
+                default:
+                    mPerson = mPersonFactory.newPerson(PersonTypes.Person4, angle);
+            }
+            Gdx.app.log("rand","" + rand);
+            persons.add(mPerson);
+            for(int j = 0; j < persons.size(); j++) {
+                Gdx.app.log("afterAdding", "" + persons.get(j).getCurrentFrame());
             }
         }
     }
