@@ -70,9 +70,9 @@ public class TrafficItems {
 
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
         WestCarQueue.add(mCar);
-        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
+        mCar = mCarFactory.newCar(CarTypes.Bus, -90);
         NorthCarQueue.add(mCar);
-        mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
+        mCar = mCarFactory.newCar(CarTypes.Bus, -180);
         EastCarQueue.add(mCar);
         mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
         SouthCarQueue.add(mCar);
@@ -106,7 +106,10 @@ public class TrafficItems {
         moveCars(WestCarQueue, delta);
         moveCars(EastCarQueue, delta);
         moveCars(FreeCarsQueue, delta);
-        removeHiddenCars();
+        removeHiddenCars(NorthCarQueue, -90);
+        removeHiddenCars(EastCarQueue, -180);
+        removeHiddenCars(SouthCarQueue, -270);
+        removeHiddenCars(WestCarQueue, 0);
 
         movePersons(NorthPersonList, delta);
         movePersons(EastPersonList, delta);
@@ -170,31 +173,23 @@ public class TrafficItems {
         }
     }
 
-    private void removeHiddenCars() {
-        if (!NorthCarQueue.isEmpty() && NorthCarQueue.element().hasLeftScreen) {
-            NorthCarQueue.remove();
-            mCar = mCarFactory.newCar(CarTypes.SimpleCar, -90);
-            NorthCarQueue.add(mCar);
+    private void removeHiddenCars(Queue<Car> cars, int angle) {
+        Random mRandGen = new Random();
+        int rand = mRandGen.nextInt(2);
+        if (!cars.isEmpty() && cars.element().hasLeftScreen) {
+            cars.remove();
+            switch (rand) {
+                case 0:
+                    mCar = mCarFactory.newCar(CarTypes.SimpleCar, angle);
+                    break;
+                case 1:
+                    mCar = mCarFactory.newCar(CarTypes.Bus, angle);
+                    break;
+                default:
+                    mCar = mCarFactory.newCar(CarTypes.Bus, angle);
+            }
+            cars.add(mCar);
         }
-
-        if (!SouthCarQueue.isEmpty() && SouthCarQueue.element().hasLeftScreen) {
-            SouthCarQueue.remove();
-            mCar = mCarFactory.newCar(CarTypes.SimpleCar, -270);
-            SouthCarQueue.add(mCar);
-        }
-
-        if (!EastCarQueue.isEmpty() && EastCarQueue.element().hasLeftScreen) {
-            EastCarQueue.remove();
-            mCar = mCarFactory.newCar(CarTypes.SimpleCar, -180);
-            EastCarQueue.add(mCar);
-        }
-
-        if (!WestCarQueue.isEmpty() && WestCarQueue.element().hasLeftScreen) {
-            WestCarQueue.remove();
-            mCar = mCarFactory.newCar(CarTypes.SimpleCar, 0);
-            WestCarQueue.add(mCar);
-        }
-
     }
 
     private void moveCars(Queue<Car> cars, float delta) {
